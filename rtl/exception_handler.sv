@@ -19,14 +19,14 @@ module exception_handler
     // From Lagarto Hun Core.
     input csr_address_t                     csr_address_i,
     input csr_command_t                     csr_command_i,
-    input logic [MLEN - 1:0]                csr_write_data_i,
+    input logic [MXLEN - 1:0]               csr_write_data_i,
 
     //input logic                             csr_exception_i,
     //input csr_exception_cause_t             csr_exception_cause_i,
     //input logic [XLEN - 1:0]                csr_exception_pc_i,
 
     // To Lagarto Hun Core.
-    output logic [MLEN - 1:0]               csr_read_data_o,
+    output logic [MXLEN - 1:0]              csr_read_data_o,
     output logic                            csr_read_data_valid_o
 );
     // Supported CSR's.
@@ -62,7 +62,8 @@ module exception_handler
     logic               csr_write_enable_w;
 
     // Internal Signals Update.
-    assign csr_address_exists_w         = (csr_address_i inside {CSR_MSTATUS:CSR_MTVAL2}) ? 1'b1 : 1'b0;
+    //assign csr_address_exists_w         = (csr_address_i inside {CSR_MSTATUS:CSR_MTVAL2}) ? 1'b1 : 1'b0;
+    assign csr_address_exists_w         = (csr_address_i inside {CSR_MSTATUS, CSR_MISA, CSR_MEDELEG, CSR_MIDELEG, CSR_MIE, CSR_MTVEC, CSR_MCOUNTEREN, CSR_MSTATUSH, CSR_MEDELEGH, CSR_MSCRATCH, CSR_MEPC, CSR_MCAUSE, CSR_MTVAL, CSR_MIP, CSR_MTINST, CSR_MTVAL2}) ? 1'b1 : 1'b0;
     assign csr_privilege_violation_w    = (csr_address_i.minimum_privilege_level < privilege_level_r) ? 1'b1 : 1'b0;
 
     // Control Signals Update.

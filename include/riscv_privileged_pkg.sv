@@ -1,70 +1,11 @@
 package riscv_privileged_pkg;
 
     // Implementation-Defined Parameters.
-    localparam MLEN                 = 64;
+    localparam MXLEN                = 64;
 
-    // Supported CSR's Definition.
+    // Supported CSR's.
     // M-Mode Registers.
     // Machine Trap Setup.
-    typedef logic [MLEN - 1:0] mstatus_t;
-    typedef logic [MLEN - 1:0] misa_t;
-    typedef logic [MLEN - 1:0] medeleg_t;
-    typedef logic [MLEN - 1:0] mideleg_t;
-    typedef logic [MLEN - 1:0] mie_t;
-    typedef logic [MLEN - 1:0] mtvec_t;
-    typedef logic [MLEN - 1:0] mcounteren_t;
-    typedef logic [MLEN - 1:0] mstatush_t;
-    typedef logic [MLEN - 1:0] medelegh_t;
-
-    // Machine Trap Handling.
-    typedef logic [MLEN - 1:0] mscratch_t;
-    typedef logic [MLEN - 1:0] mepc_t;
-    typedef logic [MLEN - 1:0] mcause_t;
-    typedef logic [MLEN - 1:0] mtval_t;
-    typedef logic [MLEN - 1:0] mip_t;
-    typedef logic [MLEN - 1:0] mtinst_t;
-    typedef logic [MLEN - 1:0] mtval2_t;
-
-
-    typedef enum logic [MLEN - 2:0]
-    {
-        SUPERVISOR_SOFTWARE_INTERRUPT   = 'd1,
-        MACHINE_SOFTWARE_INTERRUPT      = 'd3,
-        SUPERVISOR_TIMER_INTERRUPT      = 'd5,
-        MACHINE_TIMER_INTERRUPT         = 'd7,
-        SUPERVISOR_EXTERNAL_INTERRUPT   = 'd9,
-        MACHINE_EXTERNAL_INTERRUPT      = 'd11,
-        COUNTER_OVERFLOW_INTERRUPT      = 'd13
-    } asynchronous_exception_code_t;
-
-    typedef enum logic [MLEN - 2:0]
-    {   
-        INSTRUCTION_ADDRESS_MISALIGNED  = 'd0,
-        INSTRUCTION_ACCESS_FAULT        = 'd1,
-        ILLEGAL_INSTRUCTION             = 'd2,
-        BREAKPOINT                      = 'd3,
-        LOAD_ADDRESS_MISALIGNED         = 'd4,
-        LOAD_ACCESS_FAULT               = 'd5,
-        STORE_AMO_ADDRESS_MISALIGNED    = 'd6,
-        STORE_AMO_ACCESS_FAULT          = 'd7,
-        ENVIRONMENT_CALL_FROM_U_MODE    = 'd8,
-        ENVIRONMENT_CALL_FROM_S_MODE    = 'd9,
-        ENVIRONMENT_CALL_FROM_M_MODE    = 'd11,
-        INSTRUCTION_PAGE_FAULT          = 'd12,
-        LOAD_PAGE_FAULT                 = 'd13,
-        STORE_AMO_PAGE_FAULT            = 'd15,
-        SOFTWARE_CHECK                  = 'd18,
-        HARDWARE_ERROR                  = 'd19
-    } synchronous_exception_code_t;
-
-    typedef logic [MLEN - 1:0] exception_code_t;
-
-    typedef struct packed
-    {
-        logic               interrupt;
-        exception_code_t    exception_code;
-    } csr_exception_cause_t;
-
     typedef struct packed
     {
         logic           sd;
@@ -93,7 +34,159 @@ package riscv_privileged_pkg;
         logic           wpri_1;
         logic           sie;
         logic           wpri_0;
-    } rv64_xstatus_t;
+    } mstatus_t;
+
+    typedef struct packed
+    {
+        logic [1:0]     mxl;
+        logic [35:0]    zero;
+        logic [25:0]    extensions;
+    } misa_t;
+
+    typedef logic [63:0]        medeleg_t;
+    typedef logic [MXLEN - 1:0] mideleg_t;
+
+    typedef struct packed {
+        logic [47:0]    non_standard;
+        logic           zero_7;
+        logic           lcofie;
+        logic           zero_6;
+        logic           meie;
+        logic           zero_5;
+        logic           seie;
+        logic           zero_4;
+        logic           mtie;
+        logic           zero_3;
+        logic           stie;
+        logic           zero_2;
+        logic           msie;
+        logic           zero_1;
+        logic           ssie;
+        logic           zero_0;
+    } mie_t;
+
+    typedef struct packed
+    {
+        logic [61:0]    base;
+        logic [1:0]     mode;
+    } mtvec_t;
+
+    typedef struct packed
+    {
+        logic hpm31;
+        logic hpm30;
+        logic hpm29;
+        logic hpm28;
+        logic hpm27;
+        logic hpm26;
+        logic hpm25;
+        logic hpm24;
+        logic hpm23;
+        logic hpm22;
+        logic hpm21;
+        logic hpm20;
+        logic hpm19;
+        logic hpm18;
+        logic hpm17;
+        logic hpm16;
+        logic hpm15;
+        logic hpm14;
+        logic hpm13;
+        logic hpm12;
+        logic hpm11;
+        logic hpm10;
+        logic hpm9;
+        logic hpm8;
+        logic hpm7;
+        logic hpm6;
+        logic hpm5;
+        logic hpm4;
+        logic hpm3;
+        logic ir;
+        logic tm;
+        logic cy;
+    } mcounteren_t;
+
+    typedef struct packed {
+        logic [25:0]    wpri_1;
+        logic           mbe;
+        logic           sbe;
+        logic [3:0]     wpri_0;
+    } mstatush_t;
+
+    typedef logic [MXLEN - 1:0] medelegh_t; // Does not exists.
+
+    // Machine Trap Handling.
+    typedef logic [MXLEN - 1:0] mscratch_t;
+    typedef logic [MXLEN - 1:0] mepc_t;
+
+    typedef struct packed {
+        logic           interrupt;
+        logic [62:0]    exception_code;
+    } mcause_t;
+
+    typedef logic [MXLEN - 1:0] mtval_t;
+
+    typedef struct packed {
+        logic [47:0]    non_standard;
+        logic           zero_7;
+        logic           lcofip;
+        logic           zero_6;
+        logic           meip;
+        logic           zero_5;
+        logic           seip;
+        logic           zero_4;
+        logic           mtip;
+        logic           zero_3;
+        logic           stip;
+        logic           zero_2;
+        logic           msip;
+        logic           zero_1;
+        logic           ssip;
+        logic           zero_0;
+    } mip_t;
+
+    typedef logic [MXLEN - 1:0] mtinst_t;
+    typedef logic [MXLEN - 1:0] mtval2_t;
+
+    typedef enum logic [MXLEN - 2:0]
+    {
+        SUPERVISOR_SOFTWARE_INTERRUPT   = 'd1,
+        MACHINE_SOFTWARE_INTERRUPT      = 'd3,
+        SUPERVISOR_TIMER_INTERRUPT      = 'd5,
+        MACHINE_TIMER_INTERRUPT         = 'd7,
+        SUPERVISOR_EXTERNAL_INTERRUPT   = 'd9,
+        MACHINE_EXTERNAL_INTERRUPT      = 'd11,
+        COUNTER_OVERFLOW_INTERRUPT      = 'd13
+    } asynchronous_exception_code_t;
+
+    typedef enum logic [MXLEN - 2:0]
+    {   
+        INSTRUCTION_ADDRESS_MISALIGNED  = 'd0,
+        INSTRUCTION_ACCESS_FAULT        = 'd1,
+        ILLEGAL_INSTRUCTION             = 'd2,
+        BREAKPOINT                      = 'd3,
+        LOAD_ADDRESS_MISALIGNED         = 'd4,
+        LOAD_ACCESS_FAULT               = 'd5,
+        STORE_AMO_ADDRESS_MISALIGNED    = 'd6,
+        STORE_AMO_ACCESS_FAULT          = 'd7,
+        ENVIRONMENT_CALL_FROM_U_MODE    = 'd8,
+        ENVIRONMENT_CALL_FROM_S_MODE    = 'd9,
+        ENVIRONMENT_CALL_FROM_M_MODE    = 'd11,
+        INSTRUCTION_PAGE_FAULT          = 'd12,
+        LOAD_PAGE_FAULT                 = 'd13,
+        STORE_AMO_PAGE_FAULT            = 'd15,
+        SOFTWARE_CHECK                  = 'd18,
+        HARDWARE_ERROR                  = 'd19
+    } synchronous_exception_code_t;
+
+    typedef logic [MXLEN - 1:0] exception_code_t;
+
+    typedef struct packed
+    {
+        logic               interrupt;
+        exception_code_t    exception_code;
+    } csr_exception_cause_t;
 
     typedef enum logic [1:0]
     {
