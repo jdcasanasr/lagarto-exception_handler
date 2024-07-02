@@ -58,8 +58,9 @@ module exception_handler
     logic csr_write_enable_w;
 
     // Type Casts.
-    mie_t   mie_write_data_w    = mie_t'(csr_write_data_i);
-    mtvec_t mtvec_write_data_w  = mtvec_t'(csr_write_data_i);
+    mie_t           mie_write_data_w        = mie_t'(csr_write_data_i);
+    mtvec_t         mtvec_write_data_w      = mtvec_t'(csr_write_data_i);
+    mcounteren_t    mcounteren_write_data   = mcounteren_t'(csr_write_data_i[31:0]);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -233,6 +234,17 @@ module exception_handler
             else
                 mtvec_w = mtvec_r;
         end     : mtvec_update
+
+    // mcounteren
+    always_comb
+        begin   : mcounteren_update
+            if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MCOUNTEREN)
+                mcounteren_w = mcounteren_write_data;
+
+            else
+                mcounteren_w = mcounteren_r;
+
+        end     : mcounteren_update
 
     // Machine Trap Handling.
 
