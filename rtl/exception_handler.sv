@@ -22,7 +22,7 @@ module exception_handler
     input logic [MXLEN - 1:0]               csr_write_data_i,
 
     input logic                             csr_exception_i,
-    //input csr_exception_cause_t             csr_exception_cause_i,
+    input csr_exception_cause_t             csr_exception_cause_i,
     input logic [XLEN - 1:0]                csr_exception_pc_i,
 
     // To Lagarto Hun Core.
@@ -67,6 +67,7 @@ module exception_handler
     // Machine Trap Handling.
     mscratch_t      mscratch_write_data     = mscratch_t'(csr_write_data_i);
     mepc_t          mepc_write_data         = mepc_t'(csr_exception_pc_i);
+    mcause_t        mcause_write_data       = mcause_t'(csr_exception_cause_i);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -264,11 +265,22 @@ module exception_handler
 
     always_comb
         begin   : mepc_update
+            // Note: Should I Check csr_write_enable?
             if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MEPC)
                 mepc_w = {mepc_write_data[63:1], 1'b0};
 
             else
                 mepc_w = mepc_r;
         end     : mepc_update
+
+    always_comb
+        begin   : mcause_update
+            // Note: Should I Check csr_write_enable?
+            if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MCAUSE)
+                mcause_w = mcause_write_data;
+
+            else
+                mcause_w = mcause_r;
+        end     : mcause_update
 
 endmodule
