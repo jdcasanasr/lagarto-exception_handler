@@ -149,11 +149,19 @@ module exception_handler
             end
 
     // CSR Update Loops.
+
+    // misa.
     always_comb
         begin   : misa_update
             misa_w.mxl          = XLEN_64;
             misa_w.zero         = '0;
             misa_w.extensions   = I;
         end     : misa_update
+
+    // mie.
+    always_comb
+        begin   : mie_update
+
+        end     : mie_update
 
 endmodule

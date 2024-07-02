@@ -5,9 +5,9 @@ package riscv_privileged_pkg;
 
     typedef enum logic [1:0]
     {
-        XLEN_32     = 'd32,
-        XLEN_64     = 'd64,
-        XLEN_128    = 'd128
+        XLEN_32     = 'd1,
+        XLEN_64     = 'd2,
+        XLEN_128    = 'd3
     } mxl_t;
 
     typedef enum logic [25:0]
