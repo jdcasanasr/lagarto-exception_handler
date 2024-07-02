@@ -21,9 +21,9 @@ module exception_handler
     input csr_command_t                     csr_command_i,
     input logic [MXLEN - 1:0]               csr_write_data_i,
 
-    //input logic                             csr_exception_i,
+    input logic                             csr_exception_i,
     //input csr_exception_cause_t             csr_exception_cause_i,
-    //input logic [XLEN - 1:0]                csr_exception_pc_i,
+    input logic [XLEN - 1:0]                csr_exception_pc_i,
 
     // To Lagarto Hun Core.
     output logic [MXLEN - 1:0]              csr_read_data_o,
@@ -66,6 +66,7 @@ module exception_handler
 
     // Machine Trap Handling.
     mscratch_t      mscratch_write_data     = mscratch_t'(csr_write_data_i);
+    mepc_t          mepc_write_data         = mepc_t'(csr_exception_pc_i);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -260,5 +261,14 @@ module exception_handler
             else
                 mscratch_w = mscratch_r;
         end     : mscratch_update
+
+    always_comb
+        begin   : mepc_update
+            if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MEPC)
+                mepc_w = {mepc_write_data[63:1], 1'b0};
+
+            else
+                mepc_w = mepc_r;
+        end     : mepc_update
 
 endmodule
