@@ -58,9 +58,14 @@ module exception_handler
     logic csr_write_enable_w;
 
     // Type Casts.
+    // M-Mode Registers.
+    // Machine Trap Setup.
     mie_t           mie_write_data_w        = mie_t'(csr_write_data_i);
     mtvec_t         mtvec_write_data_w      = mtvec_t'(csr_write_data_i);
     mcounteren_t    mcounteren_write_data   = mcounteren_t'(csr_write_data_i[31:0]);
+
+    // Machine Trap Handling.
+    mscratch_t      mscratch_write_data     = mscratch_t'(csr_write_data_i);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -137,7 +142,7 @@ module exception_handler
         if (!reset_ni)
             begin
                 // M-Mode Registers.
-                // Machine Trap Setup.
+                // Machine Trap Se:tup.
                 mstatus_r       = mstatus_reset_w;
                 misa_r          = misa_reset_w;
                 mie_r           = mie_reset_w;
@@ -247,5 +252,13 @@ module exception_handler
         end     : mcounteren_update
 
     // Machine Trap Handling.
+    always_comb
+        begin   : mscratch_update
+            if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MSCRATCH)
+                mscratch_w = mscratch_write_data;
+
+            else
+                mscratch_w = mscratch_r;
+        end     : mscratch_update
 
 endmodule
