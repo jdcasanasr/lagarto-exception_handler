@@ -32,20 +32,20 @@ module exception_handler
     // Supported CSR's & Driving Buses.
     // M-Mode Registers.
     // Machine Trap Setup.
-    mstatus_t       mstatus_r,      mstatus_w;
-    misa_t          misa_r,         misa_w;
-    mie_t           mie_r,          mie_w;
-    mtvec_t         mtvec_r,        mtvec_w;
-    mcounteren_t    mcounteren_r,   mcounteren_w;
+    mstatus_t       mstatus_r,      mstatus_w,      mstatus_reset_w;
+    misa_t          misa_r,         misa_w,         misa_reset_w;
+    mie_t           mie_r,          mie_w,          mie_reset_w;
+    mtvec_t         mtvec_r,        mtvec_w,        mtvec_reset_w;
+    mcounteren_t    mcounteren_r,   mcounteren_w,   mcounteren_reset_w;
 
     // Machine Trap Handling.
-    mscratch_t      mscratch_r,     mscratch_w;
-    mepc_t          mepc_r,         mepc_w;
-    mcause_t        mcause_r,       mcause_w;
-    mtval_t         mtval_r,        mtval_w;
-    mip_t           mip_r,          mip_w;
-    mtinst_t        mtinst_r,       mtinst_w;
-    mtval2_t        mtval2_r,       mtval2_w;
+    mscratch_t      mscratch_r,     mscratch_w,     mscratch_reset_w;
+    mepc_t          mepc_r,         mepc_w,         mepc_reset_w;
+    mcause_t        mcause_r,       mcause_w,       mcause_reset_w;
+    mtval_t         mtval_r,        mtval_w,        mtval_reset_w;
+    mip_t           mip_r,          mip_w,          mip_reset_w;
+    mtinst_t        mtinst_r,       mtinst_w,       mtinst_reset_w;
+    mtval2_t        mtval2_r,       mtval2_w,       mtval2_reset_w;
 
     // Internal Signals.
     privilege_level_t privilege_level_r, privilege_level_w;
@@ -58,7 +58,29 @@ module exception_handler
     logic csr_write_enable_w;
 
     // Type Casts.
-    mie_t mie_write_data_w = mie_t'(csr_write_data_i);
+    mie_t   mie_write_data_w    = mie_t'(csr_write_data_i);
+    mtvec_t mtvec_write_data_w  = mtvec_t'(csr_write_data_i);
+
+    // Drive Reset Buses.
+    // M-Mode Registers.
+    // Machine Trap Setup.
+    assign mstatus_reset_w      = '0;
+    assign misa_reset_w         = misa_w;
+    assign mie_reset_w          = '0;
+
+    assign mtvec_reset_w.base   = {2'b0, BOOT_ADDRESS};
+    assign mtvec_reset_w.mode   = DIRECT;
+
+    assign mcounteren_reset_w   = '0;
+
+    // Machine Trap Handling.
+    assign mscratch_reset_w     = '0;
+    assign mepc_reset_w         = '0;
+    assign mcause_reset_w       = '0;
+    assign mtval_reset_w        = '0;
+    assign mip_reset_w          = '0;
+    assign mtinst_reset_w       = '0;
+    assign mtval2_reset_w       = '0;
 
     // Internal Signals Update.
     // Note: For the mean time, we'll only support this mode.
@@ -115,20 +137,20 @@ module exception_handler
             begin
                 // M-Mode Registers.
                 // Machine Trap Setup.
-                mstatus_r       = '0;
-                misa_r          = '0;
-                mie_r           = '0;
-                mtvec_r         = '0;
-                mcounteren_r    = '0;
+                mstatus_r       = mstatus_reset_w;
+                misa_r          = misa_reset_w;
+                mie_r           = mie_reset_w;
+                mtvec_r         = mtvec_reset_w;
+                mcounteren_r    = mcounteren_reset_w;
 
                 // Machine Trap Handling.
-                mscratch_r      = '0;
-                mepc_r          = '0;
-                mcause_r        = '0;
-                mtval_r         = '0;
-                mip_r           = '0;
-                mtinst_r        = '0;
-                mtval2_r        = '0;
+                mscratch_r      = mscratch_reset_w;
+                mepc_r          = mepc_reset_w;
+                mcause_r        = mcause_reset_w;
+                mtval_r         = mtval_reset_w;
+                mip_r           = mip_reset_w;
+                mtinst_r        = mtinst_reset_w;
+                mtval2_r        = mtval2_reset_w;
             end
 
         else
@@ -152,7 +174,7 @@ module exception_handler
             end
 
     // CSR Update Loops.
-
+    // Machine Trap Setup.
     // misa.
     always_comb
         begin   : misa_update
@@ -198,5 +220,20 @@ module exception_handler
                     mie_w.msie = mie_r.msie;
                 end
         end     : mie_update
+
+    // mtvec.
+    always_comb
+        begin   : mtvec_update
+            if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MTVEC)
+                begin
+                    mtvec_w.base = mtvec_write_data_w.base;
+                    mtvec_w.mode = mtvec_write_data_w.mode;
+                end
+
+            else
+                mtvec_w = mtvec_r;
+        end     : mtvec_update
+
+    // Machine Trap Handling.
 
 endmodule

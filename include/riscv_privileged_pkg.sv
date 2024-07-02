@@ -1,7 +1,8 @@
 package riscv_privileged_pkg;
 
     // Implementation-Defined Parameters.
-    localparam MXLEN                = 64;
+    localparam MXLEN            = 64;
+    localparam BOOT_ADDRESS     = 62'h100;
 
     typedef enum logic [1:0]
     {
@@ -108,6 +109,12 @@ package riscv_privileged_pkg;
         logic [61:0]    base;
         logic [1:0]     mode;
     } mtvec_t;
+
+    typedef enum logic [1:0]
+    {
+        DIRECT      = 'd0,
+        VECTORED    = 'd1
+    } mtvec_mode_t;
 
     typedef struct packed
     {
