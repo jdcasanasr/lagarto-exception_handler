@@ -3,6 +3,44 @@ package riscv_privileged_pkg;
     // Implementation-Defined Parameters.
     localparam MXLEN                = 64;
 
+    typedef enum logic [1:0]
+    {
+        XLEN_32     = 'd32,
+        XLEN_64     = 'd64,
+        XLEN_128    = 'd128
+    } mxl_t;
+
+    typedef enum logic [25:0]
+    {
+        A  = 'h1,
+        B  = 'h2,
+        C  = 'h4,
+        D  = 'h8,
+        E  = 'h10,
+        F  = 'h20,
+        G  = 'h40,          // Reserved.
+        H  = 'h80,
+        I  = 'h100,         // RV32I/64I/128I Base ISA.
+        J  = 'h200,         // Reserved.
+        K  = 'h400,         // Reserved.
+        L  = 'h800,         // Reserved.
+        M  = 'h1000,
+        N  = 'h2000,
+        O  = 'h4000,        // Reserved.
+        P  = 'h8000,
+        Q  = 'h10000,
+        R  = 'h20000,       // Reserved.
+        S  = 'h40000,
+        T  = 'h80000,       // Reserved.
+        U  = 'h100000,
+        V  = 'h200000,
+        W  = 'h400000,      // Reserved.
+        X  = 'h800000,
+        Y  = 'h1000000,     // Reserved.
+        Z  = 'h2000000      // Reserved.
+    } extensions_t;
+
+
     // Supported CSR's.
     // M-Mode Registers.
     // Machine Trap Setup.
