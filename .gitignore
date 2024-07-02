@@ -2,3 +2,6 @@ quartus/dni
 quartus/output_files
 quartus/qdb
 quartus/*.qws
+quartus/*.json
+quartus/*.txt
+quartus/*.history

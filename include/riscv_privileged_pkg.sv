@@ -86,7 +86,7 @@ package riscv_privileged_pkg;
 
     typedef struct packed {
         logic [47:0]    non_standard;
-        logic           zero_7;
+        logic [1:0]     zero_7;
         logic           lcofie;
         logic           zero_6;
         logic           meie;
@@ -167,7 +167,7 @@ package riscv_privileged_pkg;
 
     typedef struct packed {
         logic [47:0]    non_standard;
-        logic           zero_7;
+        logic [1:0]     zero_7;
         logic           lcofip;
         logic           zero_6;
         logic           meip;

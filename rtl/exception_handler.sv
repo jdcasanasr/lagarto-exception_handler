@@ -57,6 +57,9 @@ module exception_handler
     logic csr_read_enable_w;
     logic csr_write_enable_w;
 
+    // Type Casts.
+    mie_t mie_write_data_w = mie_t'(csr_write_data_i);
+
     // Internal Signals Update.
     // Note: For the mean time, we'll only support this mode.
     assign privilege_level_w = MACHINE;
@@ -161,7 +164,39 @@ module exception_handler
     // mie.
     always_comb
         begin   : mie_update
+            // Undefined Region.
+            mie_w.non_standard  = '0;
 
+            // Unsupported Interrupts.
+            mie_w.lcofie        = '0;
+            mie_w.seie          = '0;
+            mie_w.stie          = '0;
+            mie_w.ssie          = '0;
+
+            // Always-Zero Regions.
+            mie_w.zero_7        = '0;
+            mie_w.zero_6        = '0;
+            mie_w.zero_5        = '0;
+            mie_w.zero_4        = '0;
+            mie_w.zero_3        = '0;
+            mie_w.zero_2        = '0;
+            mie_w.zero_1        = '0;
+            mie_w.zero_0        = '0;
+
+            if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MIE)
+                begin
+                    // Note: Only M-Mode Interrupts Are Supported.
+                    mie_w.meie = mie_write_data_w.meie;
+                    mie_w.mtie = mie_write_data_w.mtie;
+                    mie_w.msie = mie_write_data_w.msie;
+                end
+
+            else
+                begin
+                    mie_w.meie = mie_r.meie;
+                    mie_w.mtie = mie_r.mtie;
+                    mie_w.msie = mie_r.msie;
+                end
         end     : mie_update
 
 endmodule
