@@ -6,39 +6,39 @@ package riscv_privileged_pkg;
 
     typedef enum logic [1:0]
     {
-        XLEN_32     = 'd1,
-        XLEN_64     = 'd2,
-        XLEN_128    = 'd3
+        XLEN_32     = 2'd1,
+        XLEN_64     = 2'd2,
+        XLEN_128    = 2'd3
     } mxl_t;
 
     typedef enum logic [25:0]
     {
-        A  = 'h1,
-        B  = 'h2,
-        C  = 'h4,
-        D  = 'h8,
-        E  = 'h10,
-        F  = 'h20,
-        G  = 'h40,          // Reserved.
-        H  = 'h80,
-        I  = 'h100,         // RV32I/64I/128I Base ISA.
-        J  = 'h200,         // Reserved.
-        K  = 'h400,         // Reserved.
-        L  = 'h800,         // Reserved.
-        M  = 'h1000,
-        N  = 'h2000,
-        O  = 'h4000,        // Reserved.
-        P  = 'h8000,
-        Q  = 'h10000,
-        R  = 'h20000,       // Reserved.
-        S  = 'h40000,
-        T  = 'h80000,       // Reserved.
-        U  = 'h100000,
-        V  = 'h200000,
-        W  = 'h400000,      // Reserved.
-        X  = 'h800000,
-        Y  = 'h1000000,     // Reserved.
-        Z  = 'h2000000      // Reserved.
+        A  = 26'h1,
+        B  = 26'h2,
+        C  = 26'h4,
+        D  = 26'h8,
+        E  = 26'h10,
+        F  = 26'h20,
+        G  = 26'h40,          // Reserved.
+        H  = 26'h80,
+        I  = 26'h100,         // RV32I/64I/128I Base ISA.
+        J  = 26'h200,         // Reserved.
+        K  = 26'h400,         // Reserved.
+        L  = 26'h800,         // Reserved.
+        M  = 26'h1000,
+        N  = 26'h2000,
+        O  = 26'h4000,        // Reserved.
+        P  = 26'h8000,
+        Q  = 26'h10000,
+        R  = 26'h20000,       // Reserved.
+        S  = 26'h40000,
+        T  = 26'h80000,       // Reserved.
+        U  = 26'h100000,
+        V  = 26'h200000,
+        W  = 26'h400000,      // Reserved.
+        X  = 26'h800000,
+        Y  = 26'h1000000,     // Reserved.
+        Z  = 26'h2000000      // Reserved.
     } extensions_t;
 
 
@@ -112,8 +112,8 @@ package riscv_privileged_pkg;
 
     typedef enum logic [1:0]
     {
-        DIRECT      = 'd0,
-        VECTORED    = 'd1
+        DIRECT      = 2'd0,
+        VECTORED    = 2'd1
     } mtvec_mode_t;
 
     typedef struct packed
@@ -196,33 +196,33 @@ package riscv_privileged_pkg;
 
     typedef enum logic [MXLEN - 2:0]
     {
-        SUPERVISOR_SOFTWARE_INTERRUPT   = 'd1,
-        MACHINE_SOFTWARE_INTERRUPT      = 'd3,
-        SUPERVISOR_TIMER_INTERRUPT      = 'd5,
-        MACHINE_TIMER_INTERRUPT         = 'd7,
-        SUPERVISOR_EXTERNAL_INTERRUPT   = 'd9,
-        MACHINE_EXTERNAL_INTERRUPT      = 'd11,
-        COUNTER_OVERFLOW_INTERRUPT      = 'd13
+        SUPERVISOR_SOFTWARE_INTERRUPT   = 63'd1,
+        MACHINE_SOFTWARE_INTERRUPT      = 63'd3,
+        SUPERVISOR_TIMER_INTERRUPT      = 63'd5,
+        MACHINE_TIMER_INTERRUPT         = 63'd7,
+        SUPERVISOR_EXTERNAL_INTERRUPT   = 63'd9,
+        MACHINE_EXTERNAL_INTERRUPT      = 63'd11,
+        COUNTER_OVERFLOW_INTERRUPT      = 63'd13
     } asynchronous_exception_code_t;
 
     typedef enum logic [MXLEN - 2:0]
     {   
-        INSTRUCTION_ADDRESS_MISALIGNED  = 'd0,
-        INSTRUCTION_ACCESS_FAULT        = 'd1,
-        ILLEGAL_INSTRUCTION             = 'd2,
-        BREAKPOINT                      = 'd3,
-        LOAD_ADDRESS_MISALIGNED         = 'd4,
-        LOAD_ACCESS_FAULT               = 'd5,
-        STORE_AMO_ADDRESS_MISALIGNED    = 'd6,
-        STORE_AMO_ACCESS_FAULT          = 'd7,
-        ENVIRONMENT_CALL_FROM_U_MODE    = 'd8,
-        ENVIRONMENT_CALL_FROM_S_MODE    = 'd9,
-        ENVIRONMENT_CALL_FROM_M_MODE    = 'd11,
-        INSTRUCTION_PAGE_FAULT          = 'd12,
-        LOAD_PAGE_FAULT                 = 'd13,
-        STORE_AMO_PAGE_FAULT            = 'd15,
-        SOFTWARE_CHECK                  = 'd18,
-        HARDWARE_ERROR                  = 'd19
+        INSTRUCTION_ADDRESS_MISALIGNED  = 63'd0,
+        INSTRUCTION_ACCESS_FAULT        = 63'd1,
+        ILLEGAL_INSTRUCTION             = 63'd2,
+        BREAKPOINT                      = 63'd3,
+        LOAD_ADDRESS_MISALIGNED         = 63'd4,
+        LOAD_ACCESS_FAULT               = 63'd5,
+        STORE_AMO_ADDRESS_MISALIGNED    = 63'd6,
+        STORE_AMO_ACCESS_FAULT          = 63'd7,
+        ENVIRONMENT_CALL_FROM_U_MODE    = 63'd8,
+        ENVIRONMENT_CALL_FROM_S_MODE    = 63'd9,
+        ENVIRONMENT_CALL_FROM_M_MODE    = 63'd11,
+        INSTRUCTION_PAGE_FAULT          = 63'd12,
+        LOAD_PAGE_FAULT                 = 63'd13,
+        STORE_AMO_PAGE_FAULT            = 63'd15,
+        SOFTWARE_CHECK                  = 63'd18,
+        HARDWARE_ERROR                  = 63'd19
     } synchronous_exception_code_t;
 
     typedef logic [MXLEN - 1:0] exception_code_t;

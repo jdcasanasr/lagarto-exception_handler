@@ -60,19 +60,31 @@ module exception_handler
     // Type Casts.
     // M-Mode Registers.
     // Machine Trap Setup.
-    mstatus_t       mstatus_write_data      = mstatus_t'(csr_write_data_i);
-    mie_t           mie_write_data_w        = mie_t'(csr_write_data_i);
-    mtvec_t         mtvec_write_data_w      = mtvec_t'(csr_write_data_i);
-    mcounteren_t    mcounteren_write_data   = mcounteren_t'(csr_write_data_i[31:0]);
+    mstatus_t       mstatus_write_data;
+    mie_t           mie_write_data_w;
+    mtvec_t         mtvec_write_data_w;
+    mcounteren_t    mcounteren_write_data;
 
     // Machine Trap Handling.
-    mscratch_t      mscratch_write_data     = mscratch_t'(csr_write_data_i);
-    mepc_t          mepc_write_data         = mepc_t'(csr_exception_pc_i);
-    mcause_t        mcause_write_data       = mcause_t'(csr_exception_cause_i);
-    mtval_t         mtval_write_data        = mtval_t'(csr_write_data_i);
-    mip_t           mip_write_data          = mip_t'(csr_write_data_i);
-    mtinst_t        mtinst_write_data       = mtinst_t'(csr_write_data_i);
-    mtval2_t        mtval2_write_data       = mtval2_t'(csr_write_data_i);
+    mscratch_t      mscratch_write_data;
+    mepc_t          mepc_write_data;
+    mcause_t        mcause_write_data;
+    mip_t           mip_write_data;
+    mtinst_t        mtinst_write_data;
+    mtval2_t        mtval2_write_data;
+
+    // Drive Casted Buses.
+    assign mstatus_write_data       = mstatus_t'(csr_write_data_i);
+    assign mie_write_data_w         = mie_t'(csr_write_data_i);
+    assign mtvec_write_data_w       = mtvec_t'(csr_write_data_i);
+    assign mcounteren_write_data    = mcounteren_t'(csr_write_data_i[31:0]);
+
+    assign mscratch_write_data      = mscratch_t'(csr_write_data_i);
+    assign mepc_write_data          = mepc_t'(csr_exception_pc_i);
+    assign mcause_write_data        = mcause_t'(csr_exception_cause_i);
+    assign mtinst_write_data        = mtinst_t'(csr_write_data_i);
+    assign mip_write_data           = mip_t'(csr_write_data_i);
+    assign mtval2_write_data        = mtval2_t'(csr_write_data_i);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -81,7 +93,7 @@ module exception_handler
     assign misa_reset_w         = misa_w;
     assign mie_reset_w          = '0;
 
-    assign mtvec_reset_w.base   = {2'b0, BOOT_ADDRESS};
+    assign mtvec_reset_w.base   = BOOT_ADDRESS;
     assign mtvec_reset_w.mode   = DIRECT;
 
     assign mcounteren_reset_w   = '0;
@@ -100,14 +112,37 @@ module exception_handler
     assign privilege_level_w = MACHINE;
 
     // Control Signals Update.
-    assign csr_address_exists_w         = (csr_address_i inside {CSR_MSTATUS, CSR_MISA, CSR_MEDELEG, CSR_MIDELEG, CSR_MIE, CSR_MTVEC, CSR_MCOUNTEREN, CSR_MSTATUSH, CSR_MEDELEGH, CSR_MSCRATCH, CSR_MEPC, CSR_MCAUSE, CSR_MTVAL, CSR_MIP, CSR_MTINST, CSR_MTVAL2}) ? 1'b1 : 1'b0;
     assign csr_privilege_violation_w    = (csr_address_i.minimum_privilege_level < privilege_level_r) ? 1'b1 : 1'b0;
 
-    assign csr_read_enable_w            = (csr_command_i inside {READ_ONLY, WRITE_AND_READ})    && csr_address_exists_w && !csr_privilege_violation_w ? 1'b1 : 1'b0;
-    assign csr_write_enable_w           = (csr_command_i inside {WRITE_ONLY, WRITE_AND_READ})   && csr_address_exists_w && !csr_privilege_violation_w ? 1'b1 : 1'b0;
+    assign csr_read_enable_w            = (csr_command_i == READ_ONLY   || csr_command_i == WRITE_AND_READ) && csr_address_exists_w && !csr_privilege_violation_w ? 1'b1 : 1'b0;
+    assign csr_write_enable_w           = (csr_command_i == WRITE_ONLY  || csr_command_i == WRITE_AND_READ) && csr_address_exists_w && !csr_privilege_violation_w ? 1'b1 : 1'b0;
 
     // Output Signals Update.
     assign csr_read_data_valid_o        = csr_address_exists_w && !csr_privilege_violation_w ? 1'b1 : 1'b0;
+
+    // Drive csr_address_exists_w.
+    always_comb
+        case(csr_address_i)
+            CSR_MSTATUS,
+            CSR_MISA,
+            CSR_MEDELEG,
+            CSR_MIDELEG,
+            CSR_MIE,
+            CSR_MTVEC,
+            CSR_MCOUNTEREN,
+            CSR_MSTATUSH,
+            CSR_MEDELEGH,
+            CSR_MSCRATCH,
+            CSR_MEPC,
+            CSR_MCAUSE,
+            CSR_MTVAL,
+            CSR_MIP,
+            CSR_MTINST,
+            CSR_MTVAL2: csr_address_exists_w = 1'b1;
+
+            default:    csr_address_exists_w = 1'b0;
+        endcase
+
 
     // Privilege Level Update.
     always_ff @ (posedge clock_i, negedge reset_ni)
@@ -390,7 +425,6 @@ module exception_handler
                     BREAKPOINT                      : mtval_w = csr_exception_pc_i;
 
                     default                         : mtval_w = '0; 
-
                 endcase
 
             else

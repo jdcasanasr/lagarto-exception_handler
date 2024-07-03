@@ -14,3 +14,4 @@ quartus_lite/*.qws
 quartus_lite/*.json
 quartus_lite/*.txt
 quartus_lite/*.history
+quartus_lite/incremental_db
