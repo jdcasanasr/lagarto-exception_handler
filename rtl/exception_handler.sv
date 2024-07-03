@@ -60,6 +60,7 @@ module exception_handler
     // Type Casts.
     // M-Mode Registers.
     // Machine Trap Setup.
+    mstatus_t       mstatus_write_data      = mstatus_t'(csr_write_data_i);
     mie_t           mie_write_data_w        = mie_t'(csr_write_data_i);
     mtvec_t         mtvec_write_data_w      = mtvec_t'(csr_write_data_i);
     mcounteren_t    mcounteren_write_data   = mcounteren_t'(csr_write_data_i[31:0]);
@@ -69,6 +70,9 @@ module exception_handler
     mepc_t          mepc_write_data         = mepc_t'(csr_exception_pc_i);
     mcause_t        mcause_write_data       = mcause_t'(csr_exception_cause_i);
     mtval_t         mtval_write_data        = mtval_t'(csr_write_data_i);
+    mip_t           mip_write_data          = mip_t'(csr_write_data_i);
+    mtinst_t        mtinst_write_data       = mtinst_t'(csr_write_data_i);
+    mtval2_t        mtval2_write_data       = mtval2_t'(csr_write_data_i);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -184,6 +188,87 @@ module exception_handler
 
     // CSR Update Loops.
     // Machine Trap Setup.
+    // mstatus.
+    always_comb
+        begin   : mstatus_update
+            // Implemented Extensions.
+            // Note: In The Mean Time, All Extensions Are Off.
+            mstatus_w.sd        = '0;
+            mstatus_w.xs        = '0;
+            mstatus_w.fs        = '0;
+            mstatus_w.vs        = '0;
+
+            // Reserved Fields For Future Use.
+            mstatus_w.wpri_4    = '0;
+            mstatus_w.wpri_3    = '0;
+            mstatus_w.wpri_2    = '0;
+            mstatus_w.wpri_1    = '0;
+            mstatus_w.wpri_0    = '0;
+
+            // Endianness Control.
+            mstatus_w.sbe       = '0;
+            mstatus_w.ube       = '0;
+
+            // U-Mode & S-MODE XLEN
+            // Note: Read-Only Zero, Since U-Mode & S-Mode Is Not Yet Supported.
+            mstatus_w.uxl       = '0;
+            mstatus_w.sxl       = '0;
+
+            // Trap SRET.
+            mstatus_w.tsr       = '0;
+
+            // Time Waitout.
+            // Note: tw = 0 Indicates WFI Can Execute In Any Privilege Mode,
+            // Whenever Possible.
+            mstatus_w.tw        = '0;
+
+            // Trap Virtual Memory.
+            // Note: Off, Since S-Mode Is Not Yet Supported.
+            mstatus_w.tvm       = '0;
+
+            // Make Executable Readable Support (Virtual Memory Page Access).
+            // Note: Read-Only Zero, Since S-Mode Is Not Yet Supported.
+            mstatus_w.mxr       = '0;
+
+            // Permit Supervisor U-Mode Memory Access.
+            // Note: Off, Since S-Mode Is Not Yet Supported.
+            mstatus_w.sum       = '0;
+
+            // Modify Privilege Support.
+            // Note: Off, Since U-Mode Is Not Supported.
+            mstatus_w.mprv      = '0;
+
+            // Supervisor Interrupt Control.
+            mstatus_w.spp       = '0;
+            mstatus_w.spie      = '0;
+            mstatus_w.sie       = '0;
+
+            // Q: What Fields Are Writable By Direct Access?.
+            if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MSTATUS)
+                begin
+                    mstatus_w.mbe = mstatus_write_data.mbe;
+                    mstatus_w.mie = mstatus_write_data.mie;
+                end
+
+            else
+                begin
+                    mstatus_w.mbe = mstatus_r.mbe;
+                    mstatus_w.mie = mstatus_r.mie;
+                end
+
+            if (csr_exception_i && !csr_privilege_violation_w)
+                begin
+                    mstatus_w.mpp   = privilege_level_r;
+                    mstatus_w.mpie  = mstatus_r.mie;
+                end
+            
+            else
+                begin
+                    mstatus_w.mpp   = mstatus_r.mpp;
+                    mstatus_w.mpie  = mstatus_r.mpie;
+                end
+        end     : mstatus_update
+
     // misa.
     always_comb
         begin   : misa_update
@@ -290,7 +375,7 @@ module exception_handler
     // mtval.
     always_comb
         begin   : mtval_update
-            if (csr_exception_i)
+            if (csr_exception_i && csr_write_enable_w)
                 case (csr_exception_cause_i)
                     LOAD_ADDRESS_MISALIGNED,
                     LOAD_ACCESS_FAULT, 
@@ -311,5 +396,55 @@ module exception_handler
             else
                 mtval_w = mtval_r;
         end     : mtval_update
+
+    // mip.
+    always_comb
+        begin   : mip_update
+            mip_w.non_standard  = '0;
+            mip_w.lcofip        = '0;
+            mip_w.seip          = '0;
+            mip_w.stip          = '0;
+            mip_w.ssip          = '0;
+
+            mip_w.zero_7        = '0;
+            mip_w.zero_6        = '0;
+            mip_w.zero_5        = '0;
+            mip_w.zero_4        = '0;
+            mip_w.zero_3        = '0;
+            mip_w.zero_2        = '0;
+            mip_w.zero_1        = '0;
+            mip_w.zero_0        = '0;
+
+            if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MIP)
+                begin
+                    mip_w.meip = mip_write_data.meip;
+                    mip_w.mtip = mip_write_data.mtip;
+                    mip_w.msip = mip_write_data.msip;
+                end
+
+            else
+                mip_w = mip_r;
+        end     : mip_update
+
+    // mtinst.
+    always_comb
+        begin   : mtinst_update
+            if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MTINST)
+                mtinst_w = mtinst_write_data;
+
+            else
+                mtinst_w = mtinst_r;
+
+        end     : mtinst_update
+
+    // mtval2.
+    always_comb
+        begin   : mtval2_update
+            if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MTVAL2)
+                mtval2_w = mtval2_write_data;
+
+            else
+                mtval2_w = mtval2_r;
+        end     : mtval2_update
 
 endmodule

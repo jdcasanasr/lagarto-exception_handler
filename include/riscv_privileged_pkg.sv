@@ -59,7 +59,7 @@ package riscv_privileged_pkg;
         logic           tvm;
         logic           mxr;
         logic           sum;
-        logic           mpvr;
+        logic           mprv;
         logic [1:0]     xs;
         logic [1:0]     fs;
         logic [1:0]     mpp;
