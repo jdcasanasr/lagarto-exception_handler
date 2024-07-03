@@ -1,0 +1,5 @@
+{ "Info" "IDMS_INIT_MSG_DB" "" "Initialized Quartus Message Database" {  } {  } 0 21958 "Initialized Quartus Message Database" 0 0 "Design Software" 0 -1 0 ""}
+{ "Info" "0" "" "Analyzing source files" {  } {  } 0 0 "Analyzing source files" 0 0 "0" 0 0 1719940189463 ""}
+{ "Info" "0" "" "Elaborating from top-level entity \"exception_handler\"" {  } {  } 0 0 "Elaborating from top-level entity \"exception_handler\"" 0 0 "0" 0 0 1719940190765 ""}
+{ "Error" "EVRFX2_VERI_1187_UNCONVERTED" "address csr_address_i exception_handler.sv(167) " "Verilog HDL error at exception_handler.sv(167): address is not declared under the prefix \"csr_address_i\"" {  } { { "/home/jdcasanasr/Development/lagarto-exception_handler/rtl/exception_handler.sv" "" { Text "/home/jdcasanasr/Development/lagarto-exception_handler/rtl/exception_handler.sv" 167 0 0 0 } }  } 0 14394 "Verilog HDL error at %3!s!: %1!s! is not declared under the prefix \"%2!s!\"" 0 0 "Design Software" 0 -1 1719940190786 ""}
+{ "Error" "0" "" "Failed to elaborate design: " {  } {  } 0 0 "Failed to elaborate design: " 0 0 "0" 0 0 1719940190856 ""}

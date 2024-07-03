@@ -1,0 +1,102 @@
+Flow report for plic
+Wed Jul  3 13:43:54 2024
+Quartus Prime Version 24.1.0 Build 115 03/21/2024 SC Pro Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Flow Summary
+  3. Flow Settings
+  4. Flow Non-Default Global Settings
+  5. Flow Elapsed Time
+  6. Flow OS Summary
+  7. Flow Log
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2024  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the Intel FPGA Software License Subscription Agreements 
+on the Quartus Prime software download page.
+
+
+
++-----------------------------------------------------+
+; Flow Summary                                        ;
++-------------+---------------------------------------+
+; Flow Status ; Successful - Wed Jul  3 13:43:54 2024 ;
++-------------+---------------------------------------+
+
+
++-----------------------------------------+
+; Flow Settings                           ;
++-------------------+---------------------+
+; Option            ; Setting             ;
++-------------------+---------------------+
+; Start date & time ; 07/03/2024 13:43:44 ;
+; Main task         ; Compilation         ;
+; Revision Name     ; plic                ;
++-------------------+---------------------+
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                                                           ;
++-------------------------------+-----------------------------------------------------------------------------+---------------+-------------+----------------+
+; Assignment Name               ; Value                                                                       ; Default Value ; Entity Name ; Section Id     ;
++-------------------------------+-----------------------------------------------------------------------------+---------------+-------------+----------------+
+; COMPILER_SIGNATURE_ID         ; 62488681627103.172003582635945                                              ; --            ; --          ; --             ;
+; EDA_OUTPUT_DATA_FORMAT        ; Verilog Hdl                                                                 ; --            ; --          ; eda_simulation ;
+; EDA_TIME_SCALE                ; 1 ps                                                                        ; --            ; --          ; eda_simulation ;
+; MAX_CORE_JUNCTION_TEMP        ; 100                                                                         ; --            ; --          ; --             ;
+; MIN_CORE_JUNCTION_TEMP        ; -40                                                                         ; --            ; --          ; --             ;
+; NUM_PARALLEL_PROCESSORS       ; All                                                                         ; --            ; --          ; --             ;
+; POWER_APPLY_THERMAL_MARGIN    ; -- (Not supported for targeted family)                                      ; Off           ; --          ; --             ;
+; POWER_BOARD_THERMAL_MODEL     ; None (CONSERVATIVE)                                                         ; --            ; --          ; --             ;
+; POWER_PRESET_COOLING_SOLUTION ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW                                       ; --            ; --          ; --             ;
+; PROJECT_OUTPUT_DIRECTORY      ; /home/jdcasanasr/Development/lagarto-exception_handler/quartus/output_files ; --            ; --          ; --             ;
+; TOP_LEVEL_ENTITY              ; exception_handler                                                           ; plic          ; --          ; --             ;
+; VERILOG_INPUT_VERSION         ; SystemVerilog_2012                                                          ; Verilog_2001  ; --          ; --             ;
++-------------------------------+-----------------------------------------------------------------------------+---------------+-------------+----------------+
+
+
++--------------------------------------------------+
+; Flow Elapsed Time                                ;
++-------------+--------------+---------------------+
+; Module Name ; Elapsed Time ; Peak Virtual Memory ;
++-------------+--------------+---------------------+
+; Synthesis   ; 00:00:12     ; 1536 MB             ;
+; Total       ; 00:00:12     ; --                  ;
++-------------+--------------+---------------------+
+
+
++------------------------------------------------------------------------+
+; Flow OS Summary                                                        ;
++-------------+------------------+---------+------------+----------------+
+; Module Name ; Machine Hostname ; OS Name ; OS Version ; Processor type ;
++-------------+------------------+---------+------------+----------------+
+; Synthesis   ; work-server      ; Ubuntu  ; 24         ; x86_64         ;
++-------------+------------------+---------+------------+----------------+
+
+
+------------
+; Flow Log ;
+------------
+quartus_syn --read_settings_files=on --write_settings_files=off plic -c plic
+
+
+
