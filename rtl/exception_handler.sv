@@ -68,6 +68,7 @@ module exception_handler
     mscratch_t      mscratch_write_data     = mscratch_t'(csr_write_data_i);
     mepc_t          mepc_write_data         = mepc_t'(csr_exception_pc_i);
     mcause_t        mcause_write_data       = mcause_t'(csr_exception_cause_i);
+    mtval_t         mtval_write_data        = mtval_t'(csr_write_data_i);
 
     // Drive Reset Buses.
     // M-Mode Registers.
@@ -254,6 +255,7 @@ module exception_handler
         end     : mcounteren_update
 
     // Machine Trap Handling.
+    // mscratch.
     always_comb
         begin   : mscratch_update
             if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MSCRATCH)
@@ -263,6 +265,7 @@ module exception_handler
                 mscratch_w = mscratch_r;
         end     : mscratch_update
 
+    // mepc.
     always_comb
         begin   : mepc_update
             // Note: Should I Check csr_write_enable?
@@ -273,6 +276,7 @@ module exception_handler
                 mepc_w = mepc_r;
         end     : mepc_update
 
+    // mcause.
     always_comb
         begin   : mcause_update
             // Note: Should I Check csr_write_enable?
@@ -282,5 +286,30 @@ module exception_handler
             else
                 mcause_w = mcause_r;
         end     : mcause_update
+
+    // mtval.
+    always_comb
+        begin   : mtval_update
+            if (csr_exception_i)
+                case (csr_exception_cause_i)
+                    LOAD_ADDRESS_MISALIGNED,
+                    LOAD_ACCESS_FAULT, 
+                    STORE_AMO_ADDRESS_MISALIGNED,
+                    STORE_AMO_ACCESS_FAULT,
+                    LOAD_ACCESS_FAULT,
+                    STORE_AMO_PAGE_FAULT,
+                    INSTRUCTION_PAGE_FAULT,
+                    INSTRUCTION_ADDRESS_MISALIGNED  : mtval_w = csr_write_data_i;
+
+                    ILLEGAL_INSTRUCTION             : mtval_w = '0;
+                    BREAKPOINT                      : mtval_w = csr_exception_pc_i;
+
+                    default                         : mtval_w = '0; 
+
+                endcase
+
+            else
+                mtval_w = mtval_r;
+        end     : mtval_update
 
 endmodule
