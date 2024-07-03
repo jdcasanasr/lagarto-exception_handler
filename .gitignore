@@ -9,6 +9,7 @@ quartus_pro/*.history
 quartus_lite/dni
 quartus_lite/output_files
 quartus_lite/qdb
+quartus_lite/db
 quartus_lite/*.qws
 quartus_lite/*.json
 quartus_lite/*.txt
