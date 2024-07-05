@@ -194,6 +194,11 @@ package riscv_privileged_pkg;
     typedef logic [MXLEN - 1:0] mtinst_t;
     typedef logic [MXLEN - 1:0] mtval2_t;
 
+    // Machine Counters/Timers.
+    typedef logic [MXLEN - 1:0] mcycle_t;
+    typedef logic [MXLEN - 1:0] minstret_t;
+    typedef logic [MXLEN - 1:0] mhpmcounter_t;
+
     typedef enum logic [MXLEN - 2:0]
     {
         SUPERVISOR_SOFTWARE_INTERRUPT   = 63'd1,
@@ -272,37 +277,37 @@ package riscv_privileged_pkg;
 
         // Machine Counters/Timers.
         // Note: Values From BSC's Versions Started At 0xC00.
-        CSR_CYCLE           = 12'hB00,
-        CSR_INSTRET         = 12'hB02,
-        CSR_HPMCOUNTER_3    = 12'hB03,
-        CSR_HPMCOUNTER_4    = 12'hB04,
-        CSR_HPMCOUNTER_5    = 12'hB05,
-        CSR_HPMCOUNTER_6    = 12'hB06,
-        CSR_HPMCOUNTER_7    = 12'hB07,
-        CSR_HPMCOUNTER_8    = 12'hB08,
-        CSR_HPMCOUNTER_9    = 12'hB09,
-        CSR_HPMCOUNTER_10   = 12'hB0A,
-        CSR_HPMCOUNTER_11   = 12'hB0B,
-        CSR_HPMCOUNTER_12   = 12'hB0C,
-        CSR_HPMCOUNTER_13   = 12'hB0D,
-        CSR_HPMCOUNTER_14   = 12'hB0E,
-        CSR_HPMCOUNTER_15   = 12'hB0F,
-        CSR_HPMCOUNTER_16   = 12'hB10,
-        CSR_HPMCOUNTER_17   = 12'hB11,
-        CSR_HPMCOUNTER_18   = 12'hB12,
-        CSR_HPMCOUNTER_19   = 12'hB13,
-        CSR_HPMCOUNTER_20   = 12'hB14,
-        CSR_HPMCOUNTER_21   = 12'hB15,
-        CSR_HPMCOUNTER_22   = 12'hB16,
-        CSR_HPMCOUNTER_23   = 12'hB17,
-        CSR_HPMCOUNTER_24   = 12'hB18,
-        CSR_HPMCOUNTER_25   = 12'hB19,
-        CSR_HPMCOUNTER_26   = 12'hB1A,
-        CSR_HPMCOUNTER_27   = 12'hB1B,
-        CSR_HPMCOUNTER_28   = 12'hB1C,
-        CSR_HPMCOUNTER_29   = 12'hB1D,
-        CSR_HPMCOUNTER_30   = 12'hB1E,
-        CSR_HPMCOUNTER_31   = 12'hB1F
+        CSR_MCYCLE           = 12'hB00,
+        CSR_MINSTRET         = 12'hB02,
+        CSR_MHPMCOUNTER_3    = 12'hB03,
+        CSR_MHPMCOUNTER_4    = 12'hB04,
+        CSR_MHPMCOUNTER_5    = 12'hB05,
+        CSR_MHPMCOUNTER_6    = 12'hB06,
+        CSR_MHPMCOUNTER_7    = 12'hB07,
+        CSR_MHPMCOUNTER_8    = 12'hB08,
+        CSR_MHPMCOUNTER_9    = 12'hB09,
+        CSR_MHPMCOUNTER_10   = 12'hB0A,
+        CSR_MHPMCOUNTER_11   = 12'hB0B,
+        CSR_MHPMCOUNTER_12   = 12'hB0C,
+        CSR_MHPMCOUNTER_13   = 12'hB0D,
+        CSR_MHPMCOUNTER_14   = 12'hB0E,
+        CSR_MHPMCOUNTER_15   = 12'hB0F,
+        CSR_MHPMCOUNTER_16   = 12'hB10,
+        CSR_MHPMCOUNTER_17   = 12'hB11,
+        CSR_MHPMCOUNTER_18   = 12'hB12,
+        CSR_MHPMCOUNTER_19   = 12'hB13,
+        CSR_MHPMCOUNTER_20   = 12'hB14,
+        CSR_MHPMCOUNTER_21   = 12'hB15,
+        CSR_MHPMCOUNTER_22   = 12'hB16,
+        CSR_MHPMCOUNTER_23   = 12'hB17,
+        CSR_MHPMCOUNTER_24   = 12'hB18,
+        CSR_MHPMCOUNTER_25   = 12'hB19,
+        CSR_MHPMCOUNTER_26   = 12'hB1A,
+        CSR_MHPMCOUNTER_27   = 12'hB1B,
+        CSR_MHPMCOUNTER_28   = 12'hB1C,
+        CSR_MHPMCOUNTER_29   = 12'hB1D,
+        CSR_MHPMCOUNTER_30   = 12'hB1E,
+        CSR_MHPMCOUNTER_31   = 12'hB1F
     } csr_allocation_t;
 
     typedef enum logic [3:0]

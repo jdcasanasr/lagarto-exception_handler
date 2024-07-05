@@ -54,7 +54,7 @@ module exception_handler
 
     // Machine Counters/Timers.
     mcycle_t        mcycle_r,           mcycle_w,           mcycle_reset_w;
-    mtinstret_t     mtinstret_r,        mtinstret_w,        mtinstret_reset_w;
+    minstret_t      minstret_r,         minstret_w,         minstret_reset_w;
     mhpmcounter_t   mhpmcounter3_r,     mhpmcounter3_w,     mhpmcounter3_reset_w;
     mhpmcounter_t   mhpmcounter4_r,     mhpmcounter4_w,     mhpmcounter4_reset_w;
     mhpmcounter_t   mhpmcounter5_r,     mhpmcounter5_w,     mhpmcounter5_reset_w;
@@ -115,24 +115,57 @@ module exception_handler
     // Drive Reset Buses.
     // M-Mode Registers.
     // Machine Trap Setup.
-    assign mstatus_reset_w      = '0;
-    assign misa_reset_w         = misa_w;
-    assign mie_reset_w          = '0;
+    assign mstatus_reset_w          = '0;
+    assign misa_reset_w             = misa_w;
+    assign mie_reset_w              = '0;
 
-    assign mtvec_reset_w.base   = {2'b0, BOOT_ADDRESS};
-    assign mtvec_reset_w.mode   = DIRECT;
+    assign mtvec_reset_w.base       = {2'b0, BOOT_ADDRESS};
+    assign mtvec_reset_w.mode       = DIRECT;
 
-    assign mcounteren_reset_w   = '0;
+    assign mcounteren_reset_w       = '0;
 
     // Machine Trap Handling.
-    assign mscratch_reset_w     = '0;
-    assign mepc_reset_w         = '0;
-    assign mcause_reset_w       = '0;
-    assign mtval_reset_w        = '0;
-    assign mip_reset_w          = '0;
-    assign mtinst_reset_w       = '0;
-    assign mtval2_reset_w       = '0;
+    assign mscratch_reset_w         = '0;
+    assign mepc_reset_w             = '0;
+    assign mcause_reset_w           = '0;
+    assign mtval_reset_w            = '0;
+    assign mip_reset_w              = '0;
+    assign mtinst_reset_w           = '0;
+    assign mtval2_reset_w           = '0;
 
+    // Machine Counters/Timers.
+    assign mcycle_reset_w           = '0;
+    assign minstret_reset_w         = '0;
+    assign mhpmcounter3_reset_w     = '0;
+    assign mhpmcounter4_reset_w     = '0;
+    assign mhpmcounter5_reset_w     = '0;
+    assign mhpmcounter6_reset_w     = '0;
+    assign mhpmcounter7_reset_w     = '0;
+    assign mhpmcounter8_reset_w     = '0;
+    assign mhpmcounter9_reset_w     = '0;
+    assign mhpmcounter10_reset_w    = '0;
+    assign mhpmcounter11_reset_w    = '0;
+    assign mhpmcounter12_reset_w    = '0;
+    assign mhpmcounter13_reset_w    = '0;
+    assign mhpmcounter14_reset_w    = '0;
+    assign mhpmcounter15_reset_w    = '0;
+    assign mhpmcounter16_reset_w    = '0;
+    assign mhpmcounter17_reset_w    = '0;
+    assign mhpmcounter18_reset_w    = '0;
+    assign mhpmcounter19_reset_w    = '0;
+    assign mhpmcounter20_reset_w    = '0;
+    assign mhpmcounter21_reset_w    = '0;
+    assign mhpmcounter22_reset_w    = '0;
+    assign mhpmcounter23_reset_w    = '0;
+    assign mhpmcounter24_reset_w    = '0;
+    assign mhpmcounter25_reset_w    = '0;
+    assign mhpmcounter26_reset_w    = '0;
+    assign mhpmcounter27_reset_w    = '0;
+    assign mhpmcounter28_reset_w    = '0;
+    assign mhpmcounter29_reset_w    = '0;
+    assign mhpmcounter30_reset_w    = '0;
+    assign mhpmcounter31_reset_w    = '0;
+    
     // Internal Signals Update.
     // Note: For the mean time, we'll only support this mode.
     assign privilege_level_w = MACHINE;
@@ -161,39 +194,39 @@ module exception_handler
             CSR_MTVAL2,
             
             // Machine Counters/Timers.
-            CSR_CYCLE,
-            CSR_INSTRET,
-            CSR_HPMCOUNTER_3,
-            CSR_HPMCOUNTER_4,
-            CSR_HPMCOUNTER_5,
-            CSR_HPMCOUNTER_6,
-            CSR_HPMCOUNTER_7,
-            CSR_HPMCOUNTER_8,
-            CSR_HPMCOUNTER_9,
-            CSR_HPMCOUNTER_10,
-            CSR_HPMCOUNTER_11,
-            CSR_HPMCOUNTER_12,
-            CSR_HPMCOUNTER_13,
-            CSR_HPMCOUNTER_14,
-            CSR_HPMCOUNTER_15,
-            CSR_HPMCOUNTER_16,
-            CSR_HPMCOUNTER_17,
-            CSR_HPMCOUNTER_18,
-            CSR_HPMCOUNTER_19,
-            CSR_HPMCOUNTER_20,
-            CSR_HPMCOUNTER_21,
-            CSR_HPMCOUNTER_22,
-            CSR_HPMCOUNTER_23,
-            CSR_HPMCOUNTER_24,
-            CSR_HPMCOUNTER_25,
-            CSR_HPMCOUNTER_26,
-            CSR_HPMCOUNTER_27,
-            CSR_HPMCOUNTER_28,
-            CSR_HPMCOUNTER_29,
-            CSR_HPMCOUNTER_30,
-            CSR_HPMCOUNTER_31:  csr_address_exists_w = 1'b1;
+            CSR_MCYCLE,
+            CSR_MINSTRET,
+            CSR_MHPMCOUNTER_3,
+            CSR_MHPMCOUNTER_4,
+            CSR_MHPMCOUNTER_5,
+            CSR_MHPMCOUNTER_6,
+            CSR_MHPMCOUNTER_7,
+            CSR_MHPMCOUNTER_8,
+            CSR_MHPMCOUNTER_9,
+            CSR_MHPMCOUNTER_10,
+            CSR_MHPMCOUNTER_11,
+            CSR_MHPMCOUNTER_12,
+            CSR_MHPMCOUNTER_13,
+            CSR_MHPMCOUNTER_14,
+            CSR_MHPMCOUNTER_15,
+            CSR_MHPMCOUNTER_16,
+            CSR_MHPMCOUNTER_17,
+            CSR_MHPMCOUNTER_18,
+            CSR_MHPMCOUNTER_19,
+            CSR_MHPMCOUNTER_20,
+            CSR_MHPMCOUNTER_21,
+            CSR_MHPMCOUNTER_22,
+            CSR_MHPMCOUNTER_23,
+            CSR_MHPMCOUNTER_24,
+            CSR_MHPMCOUNTER_25,
+            CSR_MHPMCOUNTER_26,
+            CSR_MHPMCOUNTER_27,
+            CSR_MHPMCOUNTER_28,
+            CSR_MHPMCOUNTER_29,
+            CSR_MHPMCOUNTER_30,
+            CSR_MHPMCOUNTER_31:     csr_address_exists_w = 1'b1;
 
-            default:            csr_address_exists_w = 1'b0;
+            default:                csr_address_exists_w = 1'b0;
         endcase
     
     assign csr_privilege_violation_w    = (csr_address_i.minimum_privilege_level < privilege_level_r) ? 1'b1 : 1'b0;
@@ -218,53 +251,53 @@ module exception_handler
             case(csr_allocation_t'(csr_address_i))
                 // M-Mode Registers.
                 // Machine Trap Setup.
-                CSR_MSTATUS:        csr_read_data_o = mstatus_r;
-                CSR_MISA:           csr_read_data_o = misa_r;
-                CSR_MIE:            csr_read_data_o = mie_r;
-                CSR_MTVEC:          csr_read_data_o = mtvec_r;
-                CSR_MCOUNTEREN:     csr_read_data_o = mcounteren_r;
+                CSR_MSTATUS:            csr_read_data_o = mstatus_r;
+                CSR_MISA:               csr_read_data_o = misa_r;
+                CSR_MIE:                csr_read_data_o = mie_r;
+                CSR_MTVEC:              csr_read_data_o = mtvec_r;
+                CSR_MCOUNTEREN:         csr_read_data_o = mcounteren_r;
                 
                 // Machine Trap Handling.
-                CSR_MSCRATCH:       csr_read_data_o = mscratch_r;
-                CSR_MEPC:           csr_read_data_o = mepc_r;
-                CSR_MCAUSE:         csr_read_data_o = mcause_r;
-                CSR_MTVAL:          csr_read_data_o = mtval_r;
-                CSR_MIP:            csr_read_data_o = mip_r;
-                CSR_MTINST:         csr_read_data_o = mtinst_r;
-                CSR_MTVAL2:         csr_read_data_o = mtval2_r;
+                CSR_MSCRATCH:           csr_read_data_o = mscratch_r;
+                CSR_MEPC:               csr_read_data_o = mepc_r;
+                CSR_MCAUSE:             csr_read_data_o = mcause_r;
+                CSR_MTVAL:              csr_read_data_o = mtval_r;
+                CSR_MIP:                csr_read_data_o = mip_r;
+                CSR_MTINST:             csr_read_data_o = mtinst_r;
+                CSR_MTVAL2:             csr_read_data_o = mtval2_r;
 
                 // Machine Counters/Timers.
-                CSR_CYCLE:          csr_read_data_o = mcycle_r;
-                CSR_INSTRET:        csr_read_data_o = minstret_r;
-                CSR_HPMCOUNTER_3:   csr_read_data_o = mhpmcounter3_r;
-                CSR_HPMCOUNTER_4:   csr_read_data_o = mhpmcounter4_r;
-                CSR_HPMCOUNTER_5:   csr_read_data_o = mhpmcounter5_r;
-                CSR_HPMCOUNTER_6:   csr_read_data_o = mhpmcounter6_r;
-                CSR_HPMCOUNTER_7:   csr_read_data_o = mhpmcounter7_r;
-                CSR_HPMCOUNTER_8:   csr_read_data_o = mhpmcounter8_r;
-                CSR_HPMCOUNTER_9:   csr_read_data_o = mhpmcounter9_r;
-                CSR_HPMCOUNTER_10:  csr_read_data_o = mhpmcounter10_r;
-                CSR_HPMCOUNTER_11:  csr_read_data_o = mhpmcounter11_r;
-                CSR_HPMCOUNTER_12:  csr_read_data_o = mhpmcounter12_r;
-                CSR_HPMCOUNTER_13:  csr_read_data_o = mhpmcounter13_r;
-                CSR_HPMCOUNTER_14:  csr_read_data_o = mhpmcounter14_r;
-                CSR_HPMCOUNTER_15:  csr_read_data_o = mhpmcounter15_r;
-                CSR_HPMCOUNTER_16:  csr_read_data_o = mhpmcounter16_r;
-                CSR_HPMCOUNTER_17:  csr_read_data_o = mhpmcounter17_r;
-                CSR_HPMCOUNTER_18:  csr_read_data_o = mhpmcounter18_r;
-                CSR_HPMCOUNTER_19:  csr_read_data_o = mhpmcounter19_r;
-                CSR_HPMCOUNTER_20:  csr_read_data_o = mhpmcounter20_r;
-                CSR_HPMCOUNTER_21:  csr_read_data_o = mhpmcounter21_r;
-                CSR_HPMCOUNTER_22:  csr_read_data_o = mhpmcounter22_r;
-                CSR_HPMCOUNTER_23:  csr_read_data_o = mhpmcounter23_r;
-                CSR_HPMCOUNTER_24:  csr_read_data_o = mhpmcounter24_r;
-                CSR_HPMCOUNTER_25:  csr_read_data_o = mhpmcounter25_r;
-                CSR_HPMCOUNTER_26:  csr_read_data_o = mhpmcounter26_r;
-                CSR_HPMCOUNTER_27:  csr_read_data_o = mhpmcounter27_r;
-                CSR_HPMCOUNTER_28:  csr_read_data_o = mhpmcounter28_r;
-                CSR_HPMCOUNTER_29:  csr_read_data_o = mhpmcounter29_r;
-                CSR_HPMCOUNTER_30:  csr_read_data_o = mhpmcounter30_r;
-                CSR_HPMCOUNTER_31:  csr_read_data_o = mhpmcounter31_r;
+                CSR_MCYCLE:             csr_read_data_o = mcycle_r;
+                CSR_MINSTRET:           csr_read_data_o = minstret_r;
+                CSR_MHPMCOUNTER_3:      csr_read_data_o = mhpmcounter3_r;
+                CSR_MHPMCOUNTER_4:      csr_read_data_o = mhpmcounter4_r;
+                CSR_MHPMCOUNTER_5:      csr_read_data_o = mhpmcounter5_r;
+                CSR_MHPMCOUNTER_6:      csr_read_data_o = mhpmcounter6_r;
+                CSR_MHPMCOUNTER_7:      csr_read_data_o = mhpmcounter7_r;
+                CSR_MHPMCOUNTER_8:      csr_read_data_o = mhpmcounter8_r;
+                CSR_MHPMCOUNTER_9:      csr_read_data_o = mhpmcounter9_r;
+                CSR_MHPMCOUNTER_10:     csr_read_data_o = mhpmcounter10_r;
+                CSR_MHPMCOUNTER_11:     csr_read_data_o = mhpmcounter11_r;
+                CSR_MHPMCOUNTER_12:     csr_read_data_o = mhpmcounter12_r;
+                CSR_MHPMCOUNTER_13:     csr_read_data_o = mhpmcounter13_r;
+                CSR_MHPMCOUNTER_14:     csr_read_data_o = mhpmcounter14_r;
+                CSR_MHPMCOUNTER_15:     csr_read_data_o = mhpmcounter15_r;
+                CSR_MHPMCOUNTER_16:     csr_read_data_o = mhpmcounter16_r;
+                CSR_MHPMCOUNTER_17:     csr_read_data_o = mhpmcounter17_r;
+                CSR_MHPMCOUNTER_18:     csr_read_data_o = mhpmcounter18_r;
+                CSR_MHPMCOUNTER_19:     csr_read_data_o = mhpmcounter19_r;
+                CSR_MHPMCOUNTER_20:     csr_read_data_o = mhpmcounter20_r;
+                CSR_MHPMCOUNTER_21:     csr_read_data_o = mhpmcounter21_r;
+                CSR_MHPMCOUNTER_22:     csr_read_data_o = mhpmcounter22_r;
+                CSR_MHPMCOUNTER_23:     csr_read_data_o = mhpmcounter23_r;
+                CSR_MHPMCOUNTER_24:     csr_read_data_o = mhpmcounter24_r;
+                CSR_MHPMCOUNTER_25:     csr_read_data_o = mhpmcounter25_r;
+                CSR_MHPMCOUNTER_26:     csr_read_data_o = mhpmcounter26_r;
+                CSR_MHPMCOUNTER_27:     csr_read_data_o = mhpmcounter27_r;
+                CSR_MHPMCOUNTER_28:     csr_read_data_o = mhpmcounter28_r;
+                CSR_MHPMCOUNTER_29:     csr_read_data_o = mhpmcounter29_r;
+                CSR_MHPMCOUNTER_30:     csr_read_data_o = mhpmcounter30_r;
+                CSR_MHPMCOUNTER_31:     csr_read_data_o = mhpmcounter31_r;
 
                 default:            csr_read_data_o = '0;
             endcase
@@ -295,7 +328,7 @@ module exception_handler
 
                 // Machine Counters/Timers.
                 mcycle_r        = mcycle_reset_w;
-                minstret_r      = mtinstret_reset_w;
+                minstret_r      = minstret_reset_w;
                 mhpmcounter3_r  = mhpmcounter3_reset_w;
                 mhpmcounter4_r  = mhpmcounter4_reset_w;
                 mhpmcounter5_r  = mhpmcounter5_reset_w;
@@ -345,6 +378,39 @@ module exception_handler
                 mip_r           = mip_w;
                 mtinst_r        = mtinst_w;
                 mtval2_r        = mtval2_w;
+
+                // Machine Counters/Timers.
+                mcycle_r        = mcycle_w;
+                minstret_r      = minstret_w;
+                mhpmcounter3_r  = mhpmcounter3_w;
+                mhpmcounter4_r  = mhpmcounter4_w;
+                mhpmcounter5_r  = mhpmcounter5_w;
+                mhpmcounter6_r  = mhpmcounter6_w;
+                mhpmcounter7_r  = mhpmcounter7_w;
+                mhpmcounter8_r  = mhpmcounter8_w;
+                mhpmcounter9_r  = mhpmcounter9_w;
+                mhpmcounter10_r = mhpmcounter10_w;
+                mhpmcounter11_r = mhpmcounter11_w;
+                mhpmcounter12_r = mhpmcounter12_w;
+                mhpmcounter13_r = mhpmcounter13_w;
+                mhpmcounter14_r = mhpmcounter14_w;
+                mhpmcounter15_r = mhpmcounter15_w;
+                mhpmcounter16_r = mhpmcounter16_w;
+                mhpmcounter17_r = mhpmcounter17_w;
+                mhpmcounter18_r = mhpmcounter18_w;
+                mhpmcounter19_r = mhpmcounter19_w;
+                mhpmcounter20_r = mhpmcounter20_w;
+                mhpmcounter21_r = mhpmcounter21_w;
+                mhpmcounter22_r = mhpmcounter22_w;
+                mhpmcounter23_r = mhpmcounter23_w;
+                mhpmcounter24_r = mhpmcounter24_w;
+                mhpmcounter25_r = mhpmcounter25_w;
+                mhpmcounter26_r = mhpmcounter26_w;
+                mhpmcounter27_r = mhpmcounter27_w;
+                mhpmcounter28_r = mhpmcounter28_w;
+                mhpmcounter29_r = mhpmcounter29_w;
+                mhpmcounter30_r = mhpmcounter30_w;
+                mhpmcounter31_r = mhpmcounter31_w;
             end
 
     // CSR Update Loops.
