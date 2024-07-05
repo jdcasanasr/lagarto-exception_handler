@@ -32,7 +32,9 @@ module exception_handler
 
     // To Lagarto Hun Core.
     output logic [MXLEN - 1:0]              csr_read_data_o,
-    output logic                            csr_read_data_valid_o
+    output logic                            csr_read_data_valid_o,
+
+    output logic [XLEN - 1:0]               next_pc_o
 );
     // Supported CSR's & Driving Buses.
     // M-Mode Registers.
@@ -244,6 +246,27 @@ module exception_handler
 
         else
             privilege_level_r = privilege_level_w;
+
+    // Handle PC.
+    always_comb
+        case (csr_exception_cause_i)
+            MACHINE_SOFTWARE_INTERRUPT: next_pc_o = '0;
+            MACHINE_TIMER_INTERRUPT:
+                if (mie_r.mtie)
+                    case(mtvec_r.mode)
+                        DIRECT:     next_pc_o = BOOT_ADDRESS;
+                        VECTORED:   next_pc_o = {1'b0, BOOT_ADDRESS} + (64'd4 * {1'b0, MACHINE_TIMER_INTERRUPT});
+
+                        default:    next_pc_o = BOOT_ADDRESS;
+                    endcase
+
+                else
+                    next_pc_o = pc_i + 'd4;
+
+            MACHINE_EXTERNAL_INTERRUPT: next_pc_o = '0;
+
+            default:                    next_pc_o = csr_exception_pc_i;
+        endcase
 
     // CSR Read Loop.
     always_comb
@@ -650,7 +673,7 @@ module exception_handler
             //if (external_interrupt_i)
             //    mip_w.meip = '1;
 
-            if (timer_interrupt_i)
+            if (timer_interrupt_i && mie_r.mtie)
                 mip_w.mtip = '1;
 
             //if (software_interrupt_i)

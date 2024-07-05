@@ -2,7 +2,7 @@ package riscv_privileged_pkg;
 
     // Implementation-Defined Parameters.
     localparam MXLEN            = 64;
-    localparam BOOT_ADDRESS     = 62'h100;
+    localparam BOOT_ADDRESS     = 63'h100;
 
     typedef enum logic [1:0]
     {
