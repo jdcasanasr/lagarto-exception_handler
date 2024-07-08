@@ -26,9 +26,7 @@ module exception_handler
     input logic [XLEN - 1:0]                csr_exception_pc_i,
 
     // Interrupts.
-    //input logic                             external_interrupt_i,
     input logic                             timer_interrupt_i,
-    //input logic                             software_interrupt_i,
 
     // To Lagarto Hun Core.
     output logic [MXLEN - 1:0]              csr_read_data_o,
@@ -53,39 +51,6 @@ module exception_handler
     mip_t           mip_r,              mip_w,              mip_reset_w;
     mtinst_t        mtinst_r,           mtinst_w,           mtinst_reset_w;
     mtval2_t        mtval2_r,           mtval2_w,           mtval2_reset_w;
-
-    // Machine Counters/Timers.
-    mcycle_t        mcycle_r,           mcycle_w,           mcycle_reset_w;
-    minstret_t      minstret_r,         minstret_w,         minstret_reset_w;
-    mhpmcounter_t   mhpmcounter3_r,     mhpmcounter3_w,     mhpmcounter3_reset_w;
-    mhpmcounter_t   mhpmcounter4_r,     mhpmcounter4_w,     mhpmcounter4_reset_w;
-    mhpmcounter_t   mhpmcounter5_r,     mhpmcounter5_w,     mhpmcounter5_reset_w;
-    mhpmcounter_t   mhpmcounter6_r,     mhpmcounter6_w,     mhpmcounter6_reset_w;
-    mhpmcounter_t   mhpmcounter7_r,     mhpmcounter7_w,     mhpmcounter7_reset_w;
-    mhpmcounter_t   mhpmcounter8_r,     mhpmcounter8_w,     mhpmcounter8_reset_w;
-    mhpmcounter_t   mhpmcounter9_r,     mhpmcounter9_w,     mhpmcounter9_reset_w;
-    mhpmcounter_t   mhpmcounter10_r,    mhpmcounter10_w,    mhpmcounter10_reset_w;
-    mhpmcounter_t   mhpmcounter11_r,    mhpmcounter11_w,    mhpmcounter11_reset_w;
-    mhpmcounter_t   mhpmcounter12_r,    mhpmcounter12_w,    mhpmcounter12_reset_w;
-    mhpmcounter_t   mhpmcounter13_r,    mhpmcounter13_w,    mhpmcounter13_reset_w;
-    mhpmcounter_t   mhpmcounter14_r,    mhpmcounter14_w,    mhpmcounter14_reset_w;
-    mhpmcounter_t   mhpmcounter15_r,    mhpmcounter15_w,    mhpmcounter15_reset_w;
-    mhpmcounter_t   mhpmcounter16_r,    mhpmcounter16_w,    mhpmcounter16_reset_w;
-    mhpmcounter_t   mhpmcounter17_r,    mhpmcounter17_w,    mhpmcounter17_reset_w;
-    mhpmcounter_t   mhpmcounter18_r,    mhpmcounter18_w,    mhpmcounter18_reset_w;
-    mhpmcounter_t   mhpmcounter19_r,    mhpmcounter19_w,    mhpmcounter19_reset_w;
-    mhpmcounter_t   mhpmcounter20_r,    mhpmcounter20_w,    mhpmcounter20_reset_w;
-    mhpmcounter_t   mhpmcounter21_r,    mhpmcounter21_w,    mhpmcounter21_reset_w;
-    mhpmcounter_t   mhpmcounter22_r,    mhpmcounter22_w,    mhpmcounter22_reset_w;
-    mhpmcounter_t   mhpmcounter23_r,    mhpmcounter23_w,    mhpmcounter23_reset_w;
-    mhpmcounter_t   mhpmcounter24_r,    mhpmcounter24_w,    mhpmcounter24_reset_w;
-    mhpmcounter_t   mhpmcounter25_r,    mhpmcounter25_w,    mhpmcounter25_reset_w;
-    mhpmcounter_t   mhpmcounter26_r,    mhpmcounter26_w,    mhpmcounter26_reset_w;
-    mhpmcounter_t   mhpmcounter27_r,    mhpmcounter27_w,    mhpmcounter27_reset_w;
-    mhpmcounter_t   mhpmcounter28_r,    mhpmcounter28_w,    mhpmcounter28_reset_w;
-    mhpmcounter_t   mhpmcounter29_r,    mhpmcounter29_w,    mhpmcounter29_reset_w;
-    mhpmcounter_t   mhpmcounter30_r,    mhpmcounter30_w,    mhpmcounter30_reset_w;
-    mhpmcounter_t   mhpmcounter31_r,    mhpmcounter31_w,    mhpmcounter31_reset_w;
 
     // Internal Signals.
     privilege_level_t privilege_level_r, privilege_level_w;
@@ -134,39 +99,6 @@ module exception_handler
     assign mip_reset_w              = '0;
     assign mtinst_reset_w           = '0;
     assign mtval2_reset_w           = '0;
-
-    // Machine Counters/Timers.
-    assign mcycle_reset_w           = '0;
-    assign minstret_reset_w         = '0;
-    assign mhpmcounter3_reset_w     = '0;
-    assign mhpmcounter4_reset_w     = '0;
-    assign mhpmcounter5_reset_w     = '0;
-    assign mhpmcounter6_reset_w     = '0;
-    assign mhpmcounter7_reset_w     = '0;
-    assign mhpmcounter8_reset_w     = '0;
-    assign mhpmcounter9_reset_w     = '0;
-    assign mhpmcounter10_reset_w    = '0;
-    assign mhpmcounter11_reset_w    = '0;
-    assign mhpmcounter12_reset_w    = '0;
-    assign mhpmcounter13_reset_w    = '0;
-    assign mhpmcounter14_reset_w    = '0;
-    assign mhpmcounter15_reset_w    = '0;
-    assign mhpmcounter16_reset_w    = '0;
-    assign mhpmcounter17_reset_w    = '0;
-    assign mhpmcounter18_reset_w    = '0;
-    assign mhpmcounter19_reset_w    = '0;
-    assign mhpmcounter20_reset_w    = '0;
-    assign mhpmcounter21_reset_w    = '0;
-    assign mhpmcounter22_reset_w    = '0;
-    assign mhpmcounter23_reset_w    = '0;
-    assign mhpmcounter24_reset_w    = '0;
-    assign mhpmcounter25_reset_w    = '0;
-    assign mhpmcounter26_reset_w    = '0;
-    assign mhpmcounter27_reset_w    = '0;
-    assign mhpmcounter28_reset_w    = '0;
-    assign mhpmcounter29_reset_w    = '0;
-    assign mhpmcounter30_reset_w    = '0;
-    assign mhpmcounter31_reset_w    = '0;
     
     // Internal Signals Update.
     // Note: For the mean time, we'll only support this mode.
@@ -194,39 +126,6 @@ module exception_handler
             CSR_MIP,
             CSR_MTINST,
             CSR_MTVAL2,
-            
-            // Machine Counters/Timers.
-            CSR_MCYCLE,
-            CSR_MINSTRET,
-            CSR_MHPMCOUNTER_3,
-            CSR_MHPMCOUNTER_4,
-            CSR_MHPMCOUNTER_5,
-            CSR_MHPMCOUNTER_6,
-            CSR_MHPMCOUNTER_7,
-            CSR_MHPMCOUNTER_8,
-            CSR_MHPMCOUNTER_9,
-            CSR_MHPMCOUNTER_10,
-            CSR_MHPMCOUNTER_11,
-            CSR_MHPMCOUNTER_12,
-            CSR_MHPMCOUNTER_13,
-            CSR_MHPMCOUNTER_14,
-            CSR_MHPMCOUNTER_15,
-            CSR_MHPMCOUNTER_16,
-            CSR_MHPMCOUNTER_17,
-            CSR_MHPMCOUNTER_18,
-            CSR_MHPMCOUNTER_19,
-            CSR_MHPMCOUNTER_20,
-            CSR_MHPMCOUNTER_21,
-            CSR_MHPMCOUNTER_22,
-            CSR_MHPMCOUNTER_23,
-            CSR_MHPMCOUNTER_24,
-            CSR_MHPMCOUNTER_25,
-            CSR_MHPMCOUNTER_26,
-            CSR_MHPMCOUNTER_27,
-            CSR_MHPMCOUNTER_28,
-            CSR_MHPMCOUNTER_29,
-            CSR_MHPMCOUNTER_30,
-            CSR_MHPMCOUNTER_31:     csr_address_exists_w = 1'b1;
 
             default:                csr_address_exists_w = 1'b0;
         endcase
@@ -289,39 +188,6 @@ module exception_handler
                 CSR_MTINST:             csr_read_data_o = mtinst_r;
                 CSR_MTVAL2:             csr_read_data_o = mtval2_r;
 
-                // Machine Counters/Timers.
-                CSR_MCYCLE:             csr_read_data_o = mcycle_r;
-                CSR_MINSTRET:           csr_read_data_o = minstret_r;
-                CSR_MHPMCOUNTER_3:      csr_read_data_o = mhpmcounter3_r;
-                CSR_MHPMCOUNTER_4:      csr_read_data_o = mhpmcounter4_r;
-                CSR_MHPMCOUNTER_5:      csr_read_data_o = mhpmcounter5_r;
-                CSR_MHPMCOUNTER_6:      csr_read_data_o = mhpmcounter6_r;
-                CSR_MHPMCOUNTER_7:      csr_read_data_o = mhpmcounter7_r;
-                CSR_MHPMCOUNTER_8:      csr_read_data_o = mhpmcounter8_r;
-                CSR_MHPMCOUNTER_9:      csr_read_data_o = mhpmcounter9_r;
-                CSR_MHPMCOUNTER_10:     csr_read_data_o = mhpmcounter10_r;
-                CSR_MHPMCOUNTER_11:     csr_read_data_o = mhpmcounter11_r;
-                CSR_MHPMCOUNTER_12:     csr_read_data_o = mhpmcounter12_r;
-                CSR_MHPMCOUNTER_13:     csr_read_data_o = mhpmcounter13_r;
-                CSR_MHPMCOUNTER_14:     csr_read_data_o = mhpmcounter14_r;
-                CSR_MHPMCOUNTER_15:     csr_read_data_o = mhpmcounter15_r;
-                CSR_MHPMCOUNTER_16:     csr_read_data_o = mhpmcounter16_r;
-                CSR_MHPMCOUNTER_17:     csr_read_data_o = mhpmcounter17_r;
-                CSR_MHPMCOUNTER_18:     csr_read_data_o = mhpmcounter18_r;
-                CSR_MHPMCOUNTER_19:     csr_read_data_o = mhpmcounter19_r;
-                CSR_MHPMCOUNTER_20:     csr_read_data_o = mhpmcounter20_r;
-                CSR_MHPMCOUNTER_21:     csr_read_data_o = mhpmcounter21_r;
-                CSR_MHPMCOUNTER_22:     csr_read_data_o = mhpmcounter22_r;
-                CSR_MHPMCOUNTER_23:     csr_read_data_o = mhpmcounter23_r;
-                CSR_MHPMCOUNTER_24:     csr_read_data_o = mhpmcounter24_r;
-                CSR_MHPMCOUNTER_25:     csr_read_data_o = mhpmcounter25_r;
-                CSR_MHPMCOUNTER_26:     csr_read_data_o = mhpmcounter26_r;
-                CSR_MHPMCOUNTER_27:     csr_read_data_o = mhpmcounter27_r;
-                CSR_MHPMCOUNTER_28:     csr_read_data_o = mhpmcounter28_r;
-                CSR_MHPMCOUNTER_29:     csr_read_data_o = mhpmcounter29_r;
-                CSR_MHPMCOUNTER_30:     csr_read_data_o = mhpmcounter30_r;
-                CSR_MHPMCOUNTER_31:     csr_read_data_o = mhpmcounter31_r;
-
                 default:            csr_read_data_o = '0;
             endcase
 
@@ -348,39 +214,6 @@ module exception_handler
                 mip_r           = mip_reset_w;
                 mtinst_r        = mtinst_reset_w;
                 mtval2_r        = mtval2_reset_w;
-
-                // Machine Counters/Timers.
-                mcycle_r        = mcycle_reset_w;
-                minstret_r      = minstret_reset_w;
-                mhpmcounter3_r  = mhpmcounter3_reset_w;
-                mhpmcounter4_r  = mhpmcounter4_reset_w;
-                mhpmcounter5_r  = mhpmcounter5_reset_w;
-                mhpmcounter6_r  = mhpmcounter6_reset_w;
-                mhpmcounter7_r  = mhpmcounter7_reset_w;
-                mhpmcounter8_r  = mhpmcounter8_reset_w;
-                mhpmcounter9_r  = mhpmcounter9_reset_w;
-                mhpmcounter10_r = mhpmcounter10_reset_w;
-                mhpmcounter11_r = mhpmcounter11_reset_w;
-                mhpmcounter12_r = mhpmcounter12_reset_w;
-                mhpmcounter13_r = mhpmcounter13_reset_w;
-                mhpmcounter14_r = mhpmcounter14_reset_w;
-                mhpmcounter15_r = mhpmcounter15_reset_w;
-                mhpmcounter16_r = mhpmcounter16_reset_w;
-                mhpmcounter17_r = mhpmcounter17_reset_w;
-                mhpmcounter18_r = mhpmcounter18_reset_w;
-                mhpmcounter19_r = mhpmcounter19_reset_w;
-                mhpmcounter20_r = mhpmcounter20_reset_w;
-                mhpmcounter21_r = mhpmcounter21_reset_w;
-                mhpmcounter22_r = mhpmcounter22_reset_w;
-                mhpmcounter23_r = mhpmcounter23_reset_w;
-                mhpmcounter24_r = mhpmcounter24_reset_w;
-                mhpmcounter25_r = mhpmcounter25_reset_w;
-                mhpmcounter26_r = mhpmcounter26_reset_w;
-                mhpmcounter27_r = mhpmcounter27_reset_w;
-                mhpmcounter28_r = mhpmcounter28_reset_w;
-                mhpmcounter29_r = mhpmcounter29_reset_w;
-                mhpmcounter30_r = mhpmcounter30_reset_w;
-                mhpmcounter31_r = mhpmcounter31_reset_w;
             end
 
         else
@@ -401,39 +234,6 @@ module exception_handler
                 mip_r           = mip_w;
                 mtinst_r        = mtinst_w;
                 mtval2_r        = mtval2_w;
-
-                // Machine Counters/Timers.
-                mcycle_r        = mcycle_w;
-                minstret_r      = minstret_w;
-                mhpmcounter3_r  = mhpmcounter3_w;
-                mhpmcounter4_r  = mhpmcounter4_w;
-                mhpmcounter5_r  = mhpmcounter5_w;
-                mhpmcounter6_r  = mhpmcounter6_w;
-                mhpmcounter7_r  = mhpmcounter7_w;
-                mhpmcounter8_r  = mhpmcounter8_w;
-                mhpmcounter9_r  = mhpmcounter9_w;
-                mhpmcounter10_r = mhpmcounter10_w;
-                mhpmcounter11_r = mhpmcounter11_w;
-                mhpmcounter12_r = mhpmcounter12_w;
-                mhpmcounter13_r = mhpmcounter13_w;
-                mhpmcounter14_r = mhpmcounter14_w;
-                mhpmcounter15_r = mhpmcounter15_w;
-                mhpmcounter16_r = mhpmcounter16_w;
-                mhpmcounter17_r = mhpmcounter17_w;
-                mhpmcounter18_r = mhpmcounter18_w;
-                mhpmcounter19_r = mhpmcounter19_w;
-                mhpmcounter20_r = mhpmcounter20_w;
-                mhpmcounter21_r = mhpmcounter21_w;
-                mhpmcounter22_r = mhpmcounter22_w;
-                mhpmcounter23_r = mhpmcounter23_w;
-                mhpmcounter24_r = mhpmcounter24_w;
-                mhpmcounter25_r = mhpmcounter25_w;
-                mhpmcounter26_r = mhpmcounter26_w;
-                mhpmcounter27_r = mhpmcounter27_w;
-                mhpmcounter28_r = mhpmcounter28_w;
-                mhpmcounter29_r = mhpmcounter29_w;
-                mhpmcounter30_r = mhpmcounter30_w;
-                mhpmcounter31_r = mhpmcounter31_w;
             end
 
     // CSR Update Loops.
@@ -574,7 +374,7 @@ module exception_handler
                     mtvec_w.mode = mtvec_write_data_w.mode;
                 end
 
-            else
+            else if (timer_interrupt_i)
                 mtvec_w = mtvec_r;
         end     : mtvec_update
 
@@ -670,14 +470,8 @@ module exception_handler
             mip_w.mtip          = '0;
             mip_w.msip          = '0;
 
-            //if (external_interrupt_i)
-            //    mip_w.meip = '1;
-
-            if (timer_interrupt_i && mie_r.mtie)
+            if (timer_interrupt_i)
                 mip_w.mtip = '1;
-
-            //if (software_interrupt_i)
-            //    mip_w.msip = '1;
 
             if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MIP)
                 begin
@@ -710,5 +504,28 @@ module exception_handler
             else
                 mtval2_w = mtval2_r;
         end     : mtval2_update
+
+    // Interrupt Handler.
+    always_comb
+        begin   : interrupt_handler
+            if (mstatus_r.mie)
+                begin
+                // Handle Timer Interrupts.
+                if (mip_r.mtip && mie.mtie)
+                    // 0) Wait For Current Instruction To Retire.
+                    // 1) Disable Global Interrupts.
+                    // 2) Save PC to mepc.
+                    // 3) Save General Context.
+                    // 4) Flush Pipeline.
+                    // 5) Read mtvec And Deduce Next PC.
+                    // 6) Wait For mret.
+                    // 7) Restore General Context.
+                    // 8) Deduce Next PC as mepc + 4.
+                    // 9) Re-Enable Global Interrupts.
+                end
+
+            else
+                // Keep State.
+        end     : interrupt_handler
 
 endmodule
