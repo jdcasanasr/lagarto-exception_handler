@@ -17,6 +17,8 @@ module exception_handler
     input logic                             reset_ni,
 
     // From Lagarto Hun Core.
+    input logic [XLEN - 1:0]                pc_i,
+
     input csr_address_t                     csr_address_i,
     input csr_command_t                     csr_command_i,
     input logic [MXLEN - 1:0]               csr_write_data_i,
@@ -28,11 +30,18 @@ module exception_handler
     // Interrupts.
     input logic                             timer_interrupt_i,
 
+    // Inputs From Commit Stage.
+    input logic                             instruction_retired_i,
+
+    // Return From Trap Handler Code.
+    input logic                             mret_i,
+
     // To Lagarto Hun Core.
     output logic [MXLEN - 1:0]              csr_read_data_o,
     output logic                            csr_read_data_valid_o,
 
-    output logic [XLEN - 1:0]               next_pc_o
+    output logic [XLEN - 1:0]               trap_pc_o,
+    output logic                            flush_pipeline_o
 );
     // Supported CSR's & Driving Buses.
     // M-Mode Registers.
@@ -53,7 +62,8 @@ module exception_handler
     mtval2_t        mtval2_r,           mtval2_w,           mtval2_reset_w;
 
     // Internal Signals.
-    privilege_level_t privilege_level_r, privilege_level_w;
+    privilege_level_t   privilege_level_r, privilege_level_w;
+    logic               trap_taken_w;
 
     // Control Signals.
     logic csr_address_exists_w;
@@ -125,7 +135,7 @@ module exception_handler
             CSR_MTVAL,
             CSR_MIP,
             CSR_MTINST,
-            CSR_MTVAL2,
+            CSR_MTVAL2:             csr_address_exists_w = 1'b1;
 
             default:                csr_address_exists_w = 1'b0;
         endcase
@@ -145,27 +155,6 @@ module exception_handler
 
         else
             privilege_level_r = privilege_level_w;
-
-    // Handle PC.
-    always_comb
-        case (csr_exception_cause_i)
-            MACHINE_SOFTWARE_INTERRUPT: next_pc_o = '0;
-            MACHINE_TIMER_INTERRUPT:
-                if (mie_r.mtie)
-                    case(mtvec_r.mode)
-                        DIRECT:     next_pc_o = BOOT_ADDRESS;
-                        VECTORED:   next_pc_o = {1'b0, BOOT_ADDRESS} + (64'd4 * {1'b0, MACHINE_TIMER_INTERRUPT});
-
-                        default:    next_pc_o = BOOT_ADDRESS;
-                    endcase
-
-                else
-                    next_pc_o = pc_i + 'd4;
-
-            MACHINE_EXTERNAL_INTERRUPT: next_pc_o = '0;
-
-            default:                    next_pc_o = csr_exception_pc_i;
-        endcase
 
     // CSR Read Loop.
     always_comb
@@ -256,6 +245,7 @@ module exception_handler
             mstatus_w.wpri_0    = '0;
 
             // Endianness Control.
+            mstatus_w.mbe       = '0;
             mstatus_w.sbe       = '0;
             mstatus_w.ube       = '0;
 
@@ -293,29 +283,33 @@ module exception_handler
             mstatus_w.spie      = '0;
             mstatus_w.sie       = '0;
 
-            // Q: What Fields Are Writable By Direct Access?.
-            if (csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MSTATUS)
-                begin
-                    mstatus_w.mbe = mstatus_write_data.mbe;
-                    mstatus_w.mie = mstatus_write_data.mie;
-                end
+            // Handle Explicit Writes.
+            if (csr_write_enable_w && !csr_privilege_violation_w && csr_allocation_t'(csr_address_i) == CSR_MSTATUS)
+                mstatus_w.mie = mstatus_write_data.mie;
 
             else
-                begin
-                    mstatus_w.mbe = mstatus_r.mbe;
-                    mstatus_w.mie = mstatus_r.mie;
-                end
+                mstatus_w.mie = mstatus_r.mie;
 
-            if (csr_exception_i && !csr_privilege_violation_w)
+            // Handle Traps.
+            if (trap_taken_w)
                 begin
                     mstatus_w.mpp   = privilege_level_r;
                     mstatus_w.mpie  = mstatus_r.mie;
+                    mstatus_w.mie   = 1'b0;
                 end
-            
+
+            else if (mret_i)
+                begin
+                    mstatus_w.mpp   = MACHINE;
+                    mstatus_w.mpie  = 1'b0;
+                    mstatus_w.mie   = mstatus_r.mpie;
+                end
+
             else
                 begin
                     mstatus_w.mpp   = mstatus_r.mpp;
                     mstatus_w.mpie  = mstatus_r.mpie;
+                    mstatus_w.mie   = mstatus_r.mie;
                 end
         end     : mstatus_update
 
@@ -374,8 +368,11 @@ module exception_handler
                     mtvec_w.mode = mtvec_write_data_w.mode;
                 end
 
-            else if (timer_interrupt_i)
-                mtvec_w = mtvec_r;
+            else
+                begin
+                    mtvec_w.base = mtvec_r.base;
+                    mtvec_w.mode = mtvec_r.mode;
+                end
         end     : mtvec_update
 
     // mcounteren
@@ -403,9 +400,18 @@ module exception_handler
     // mepc.
     always_comb
         begin   : mepc_update
+            mepc_w = mepc_r;
+
             // Note: Should I Check csr_write_enable?
             if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MEPC)
                 mepc_w = {mepc_write_data[63:1], 1'b0};
+
+            else
+                mepc_w = mepc_r;
+
+            // Handle Traps
+            if (trap_taken_w)
+                mepc_w = pc_i;
 
             else
                 mepc_w = mepc_r;
@@ -415,9 +421,12 @@ module exception_handler
     always_comb
         begin   : mcause_update
             // Note: Should I Check csr_write_enable?
-            if (csr_exception_i && csr_write_enable_w && csr_allocation_t'(csr_address_i) == CSR_MCAUSE)
-                mcause_w = mcause_write_data;
-
+            if (timer_interrupt_i)
+                begin
+                    mcause_w.interrupt      = 1'b1;
+                    mcause_w.exception_code = MACHINE_TIMER_INTERRUPT;
+                end
+                    
             else
                 mcause_w = mcause_r;
         end     : mcause_update
@@ -508,24 +517,41 @@ module exception_handler
     // Interrupt Handler.
     always_comb
         begin   : interrupt_handler
+            trap_taken_w        = 1'b0;
+
             if (mstatus_r.mie)
-                begin
-                // Handle Timer Interrupts.
-                if (mip_r.mtip && mie.mtie)
-                    // 0) Wait For Current Instruction To Retire.
-                    // 1) Disable Global Interrupts.
-                    // 2) Save PC to mepc.
-                    // 3) Save General Context.
-                    // 4) Flush Pipeline.
-                    // 5) Read mtvec And Deduce Next PC.
-                    // 6) Wait For mret.
-                    // 7) Restore General Context.
-                    // 8) Deduce Next PC as mepc + 4.
-                    // 9) Re-Enable Global Interrupts.
-                end
+                if (mip_r.mtip && mie_r.mtie)
+                    trap_taken_w = 1'b1;
+
+                else if (mret_i)
+                    trap_taken_w = 1'b0;
+
+                else
+                    trap_taken_w = 1'b0;
+        end     : interrupt_handler
+
+    always_comb
+        begin   : pipeline_update
+            flush_pipeline_o = 1'b0;
+
+            if (trap_taken_w && instruction_retired_i)
+                flush_pipeline_o = 1'b1;
 
             else
-                // Keep State.
-        end     : interrupt_handler
+                flush_pipeline_o = 1'b0;
+        end     : pipeline_update
+
+    // Handle Next PC.
+    always_comb
+        if (trap_taken_w)
+            case(mtvec_r.mode)
+                DIRECT:     trap_pc_o = BOOT_ADDRESS;
+                VECTORED:   trap_pc_o = {1'b0, BOOT_ADDRESS} + (64'd4 * {1'b0, mcause_w.exception_code});
+
+                default:    trap_pc_o = BOOT_ADDRESS;
+            endcase
+
+        else
+            trap_pc_o = pc_i + 'd4;
 
 endmodule
