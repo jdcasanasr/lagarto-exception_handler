@@ -6,6 +6,14 @@ quartus_pro/*.json
 quartus_pro/*.txt
 quartus_pro/*.history
 
+test/quartus_pro/dni
+test/quartus_pro/output_files
+test/quartus_pro/qdb
+test/quartus_pro/*.qws
+test/quartus_pro/*.json
+test/quartus_pro/*.txt
+test/quartus_pro/*.history
+
 quartus_lite/dni
 quartus_lite/output_files
 quartus_lite/qdb
