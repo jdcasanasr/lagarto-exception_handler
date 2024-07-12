@@ -1,4 +1,4 @@
-typedef enum
+typedef enum logic [2:0]
 {
     RESET,
     IDLE,
@@ -32,7 +32,6 @@ module test
             current_state_r = next_state_w;
 
     always_comb
-        // What If We Use "unique case"?
         unique case (current_state_r)
             RESET:              next_state_w = IDLE;
             IDLE:
@@ -49,6 +48,8 @@ module test
             WAIT_FOR_RETIRE:    next_state_w = retire_i ? PROCESS_TRAP : WAIT_FOR_RETIRE;
             PROCESS_TRAP:       next_state_w = WAIT_FOR_RETURN;
             WAIT_FOR_RETURN:    next_state_w = mret_i ? IDLE : WAIT_FOR_RETURN;
+
+            default:            next_state_w = IDLE;
         endcase
 
     always_comb
@@ -60,6 +61,8 @@ module test
             WAIT_FOR_RETIRE:    flush_o = 1'b0;
             PROCESS_TRAP:       flush_o = 1'b1;
             WAIT_FOR_RETURN:    flush_o = 1'b0;
+
+            default:            flush_o = 1'b0;
         endcase
 
 endmodule
