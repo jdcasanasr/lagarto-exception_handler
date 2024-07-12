@@ -14,6 +14,16 @@ test/quartus_pro/*.json
 test/quartus_pro/*.txt
 test/quartus_pro/*.history
 
+test/quartus_lite/dni
+test/quartus_lite/output_files
+test/quartus_lite/qdb
+test/quartus_lite/db
+test/quartus_lite/*.qws
+test/quartus_lite/*.json
+test/quartus_lite/*.txt
+test/quartus_lite/*.history
+test/quartus_lite/incremental_db
+
 quartus_lite/dni
 quartus_lite/output_files
 quartus_lite/qdb
